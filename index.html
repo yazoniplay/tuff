@@ -473,9 +473,13 @@ async function autoFixWorkflowRun(n){
   const treeRes=await fetch(base+"/git/trees/"+encodeURIComponent(run.head_sha)+"?recursive=1",{headers});
   if(!treeRes.ok)throw new Error("Could not inspect repository tree. Check Contents: Read access.");
   const treeData=await treeRes.json(),paths=(treeData.tree||[]).filter(x=>x.type==="blob").map(x=>x.path);
-  const workflowPaths=paths.filter(p=>/^\.github\/workflows\/[^/]+\.ya?ml$/i.test(p)).slice(0,8);
-  const detected=[...String(logs).matchAll(/(?:^|[\s:'"])([A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*\.(?:js|jsx|ts|tsx|py|yml|yaml|json|toml|sh|css|html|mjs|cjs|go|rs))(?::\d+)?/gm)].map(m=>m[1]).filter(p=>paths.includes(p));
-  const candidates=[...new Set([...workflowPaths,...detected])].slice(0,8),files=[];
+  const logText=String(logs||"");
+  const workflowPaths=paths.filter(p=>/^\.github\/workflows\/[^/]+\.ya?ml$/i.test(p)).slice(0,2);
+  // Runner tracebacks often contain absolute paths, so repo-relative matches alone miss files.
+  const mentioned=paths.filter(p=>logText.toLowerCase().includes(p.toLowerCase())||logText.toLowerCase().includes(p.split("/").pop().toLowerCase()));
+  const detected=[...String(logs).matchAll(/(?:^|[\s:'"])([A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*\.(?:js|jsx|ts|tsx|py|yml|yaml|json|toml|sh|css|html|mjs|cjs|go|rs))(?::\d+)?/gm)].map(m=>m[1].replace(/^.*?\/work\/[^/]+\/[^/]+\//,"")).filter(p=>paths.includes(p));
+  const relatedTests=mentioned.some(p=>/^tests?\//i.test(p)&&/\.(py|js|jsx|ts|tsx)$/i.test(p))?paths.filter(p=>/^tests?\/.*\.(py|js|jsx|ts|tsx)$/i.test(p)): [];
+  const candidates=[...new Set([...detected,...mentioned,...relatedTests,...workflowPaths])].slice(0,12),files=[];
   for(const path of candidates){try{
    const fr=await fetch(base+"/contents/"+path.split("/").map(encodeURIComponent).join("/")+"?ref="+encodeURIComponent(run.head_sha),{headers});if(!fr.ok)continue;
    const fd=await fr.json();if(fd.type!=="file"||!fd.content)continue;
