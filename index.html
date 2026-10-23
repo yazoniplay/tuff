@@ -279,6 +279,24 @@ function startCommitMonitor(){
  pollCommits(true);
  commitPollTimer=setInterval(()=>{if(repo()&&token())pollCommits(false)},20000);
 }
+// Imports commits captured by GitHub Actions while this browser was closed.
+async function pollHostedCommitFeed(){
+ const currentRepo=repo();
+ if(!currentRepo)return;
+ try{
+  const res=await fetch("https://raw.githubusercontent.com/yazoniplay/tuff/main/data/commit-feed.json?ts="+Date.now(),{cache:"no-store"});
+  if(!res.ok)return;
+  const feed=await res.json();
+  if(!feed||!Array.isArray(feed.commits))return;
+  const relevant=feed.commits.filter(c=>String(c.repository||"yazoniplay/yazoniiOS").toLowerCase()===currentRepo.toLowerCase());
+  const key=commitSeenKey(currentRepo);let seen=[];
+  try{seen=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){seen=[]}
+  const seenSet=new Set(Array.isArray(seen)?seen.map(String):[]);
+  const fresh=relevant.filter(c=>c&&c.sha&&!seenSet.has(String(c.sha))).reverse();
+  for(const commit of fresh){if(repo()!==currentRepo)break;createCommitBlock(commit);seenSet.add(String(commit.sha))}
+  if(fresh.length)localStorage.setItem(key,JSON.stringify(Array.from(seenSet).slice(-1000)));
+ }catch(e){console.warn("Hosted commit feed unavailable",e)}
+}
 async function dispatchWorkflow(n){
  if(!repo()||!token()){toast("Connect GitHub with a repository token first.");showModal("githubModal");return}
  if(!confirm("Dispatch workflow for “"+n.title+"”? Tuff will monitor this repository and add a block when any workflow run completes."))return;
@@ -294,7 +312,7 @@ async function dispatchWorkflow(n){
 $("themeBtn").onclick=()=>{const dark=!document.documentElement.classList.contains("dark");document.documentElement.classList.toggle("dark",dark);localStorage.setItem(STORAGE.theme,dark?"dark":"light");$("themeBtn").innerHTML='<i data-lucide="'+(dark?"sun":"moon")+'" width="15"></i>';icons()};
 function icons(){if(window.lucide)window.lucide.createIcons()}
 function init(){const theme=localStorage.getItem(STORAGE.theme)||"light";document.documentElement.classList.toggle("dark",theme==="dark");$("themeBtn").innerHTML='<i data-lucide="'+(theme==="dark"?"sun":"moon")+'" width="15"></i>';icons();render();updateGithubStatus(!!repo()&&!!token());fillNodeSelects();window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeInspector();document.querySelectorAll(".modal.open").forEach(m=>closeModal(m.id))}});window.addEventListener("resize",()=>{});}
-init();startWorkflowMonitor();startCommitMonitor();
+init();startWorkflowMonitor();startCommitMonitor();pollHostedCommitFeed();
 })();
 </script>
 </body></html>
