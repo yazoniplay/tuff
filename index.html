@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101014">
+  <meta name="description" content="Tuff — your open-source AI social media team. Research, create, review, and grow.">
+  <title>Tuff — AI Social Media Team</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="./"><span class="brand-mark">t</span><span>tuff<span class="brand-dot">.</span><small>AI SOCIAL TEAM</small></span></a>
+      <div class="workspace"><span class="workspace-icon">✳</span><span><b>Workspace</b><small>Personal brand</small></span><span class="chevron">⌄</span></div>
+      <p class="nav-label">WORKSPACE</p>
+      <nav class="nav">
+        <a class="nav-item active" href="#overview" data-view="overview"><span>◫</span> Overview</a>
+        <a class="nav-item" href="#research" data-view="research"><span>⌕</span> Research <i id="research-count">—</i></a>
+        <a class="nav-item" href="#studio" data-view="studio"><span>✎</span> Content studio</a>
+        <a class="nav-item" href="#approvals" data-view="approvals"><span>✓</span> Approvals <i id="approval-count">—</i></a>
+        <a class="nav-item" href="#analytics" data-view="analytics"><span>▥</span> Analytics</a>
+      </nav>
+      <p class="nav-label">CONFIGURATION</p>
+      <nav class="nav">
+        <a class="nav-item" href="#knowledge" data-view="knowledge"><span>▤</span> Brand knowledge</a>
+        <a class="nav-item" href="#settings" data-view="settings"><span>⚙</span> Settings</a>
+      </nav>
+      <div class="sidebar-bottom"><span class="status-dot"></span><span><b>Engine status</b><small>GitHub Actions</small></span><a href="https://github.com/yazoniplay/tuff/actions" target="_blank" rel="noreferrer" aria-label="Open GitHub Actions">↗</a></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="mobile-brand">tuff<span>.</span></div><div class="breadcrumbs">Workspace <span>/</span> <b id="crumb">Overview</b></div><div class="top-actions"><span class="live-indicator"><i></i> GitHub connected</span><a class="avatar" href="https://github.com/yazoniplay/tuff" target="_blank" rel="noreferrer">T</a></div></header>
+      <section class="page">
+        <div class="welcome-row"><div><p class="eyebrow">YOUR AI-POWERED CREW</p><h1 id="page-title">Good work starts here.</h1><p class="subheading" id="page-subtitle">Your social media operation, in one place.</p></div><a class="button primary" href="#studio" data-view="studio"><span>＋</span> Create content</a></div>
+        <div class="notice" id="connection-notice"><span class="notice-icon">↗</span><div><b>Connected to GitHub</b><p>Dashboard data loads from public repository Issues. AI keys stay in GitHub Actions secrets — never in this browser.</p></div><button id="dismiss-notice" aria-label="Dismiss notice">×</button></div>
+        <div id="view-content">
+          <div class="section-heading"><div><h2>Workspace overview</h2><p>Latest activity across your content pipeline.</p></div><button class="button secondary" id="refresh-btn">↻ Refresh data</button></div>
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-top"><span>Research items</span><span class="stat-icon violet">⌕</span></div><div class="stat-value" id="stat-research">—</div><div class="stat-foot">From repository reports</div></article>
+            <article class="stat-card"><div class="stat-top"><span>Drafts in queue</span><span class="stat-icon blue">✎</span></div><div class="stat-value" id="stat-drafts">—</div><div class="stat-foot">Content awaiting review</div></article>
+            <article class="stat-card"><div class="stat-top"><span>Approved</span><span class="stat-icon green">✓</span></div><div class="stat-value" id="stat-approved">—</div><div class="stat-foot">Approved draft issues</div></article>
+            <article class="stat-card"><div class="stat-top"><span>Open tasks</span><span class="stat-icon orange">◷</span></div><div class="stat-value" id="stat-tasks">—</div><div class="stat-foot">Open repository issues</div></article>
+          </div>
+          <div class="content-grid"><section class="panel"><div class="panel-heading"><div><h3>Recent activity</h3><p>Latest issues from your repository</p></div><a href="https://github.com/yazoniplay/tuff/issues" target="_blank" rel="noreferrer" class="text-link">View all ↗</a></div><div id="recent-issues" class="issue-list"><div class="loading"><span class="spinner"></span> Loading repository activity…</div></div></section>
+          <section class="panel quick-panel"><div class="panel-heading"><div><h3>Quick actions</h3><p>Keep the workflow moving</p></div></div><a class="quick-action" href="#studio" data-view="studio"><span class="quick-icon violet">✦</span><span><b>Draft new content</b><small>Build a post with Gemini</small></span><span class="arrow">→</span></a><a class="quick-action" href="https://github.com/yazoniplay/tuff/actions/workflows/daily-research.yml" target="_blank" rel="noreferrer"><span class="quick-icon blue">⌕</span><span><b>Run research</b><small>Start the GitHub workflow</small></span><span class="arrow">↗</span></a><a class="quick-action" href="#approvals" data-view="approvals"><span class="quick-icon green">✓</span><span><b>Review drafts</b><small>Approve work in GitHub Issues</small></span><span class="arrow">→</span></a><a class="quick-action" href="#knowledge" data-view="knowledge"><span class="quick-icon orange">▤</span><span><b>Update brand voice</b><small>Keep AI on-brand</small></span><span class="arrow">→</span></a><div class="tip"><span>✳</span><p><b>Human-in-the-loop by design.</b><br>Nothing should publish until a reviewer approves it.</p></div></section></div>
+        </div>
+        <footer><span>tuff<span class="brand-dot">.</span> <span>Open source social media automation</span></span><div><a href="https://github.com/yazoniplay/tuff" target="_blank" rel="noreferrer">GitHub repository ↗</a><span>Built with Gemini + GitHub Actions</span></div></footer>
+      </section>
+    </main>
+  </div>
+  <script src="app.js" defer></script>
+</body>
+</html>
