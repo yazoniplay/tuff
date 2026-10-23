@@ -289,12 +289,12 @@ async function pollHostedCommitFeed(){
   const feed=await res.json();
   if(!feed||!Array.isArray(feed.commits))return;
   const relevant=feed.commits.filter(c=>String(c.repository||"yazoniplay/yazoniiOS").toLowerCase()===currentRepo.toLowerCase());
-  const key=commitSeenKey(currentRepo);let seen=[];
-  try{seen=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){seen=[]}
-  const seenSet=new Set(Array.isArray(seen)?seen.map(String):[]);
-  const fresh=relevant.filter(c=>c&&c.sha&&!seenSet.has(String(c.sha))).reverse();
-  for(const commit of fresh){if(repo()!==currentRepo)break;createCommitBlock(commit);seenSet.add(String(commit.sha))}
-  if(fresh.length)localStorage.setItem(key,JSON.stringify(Array.from(seenSet).slice(-1000)));
+  // The browser's old polling baseline must not suppress commits captured while Tuff was closed.
+  // createCommitBlock deduplicates against persisted canvas nodes by full SHA.
+  const fresh=relevant.filter(c=>c&&c.sha).reverse();
+  let imported=0;
+  for(const commit of fresh){if(repo()!==currentRepo)break;if(createCommitBlock(commit))imported++}
+  if(imported)toast("Imported "+imported+" commit"+(imported===1?"":"s")+" recorded while Tuff was closed.");
  }catch(e){console.warn("Hosted commit feed unavailable",e)}
 }
 async function dispatchWorkflow(n){
