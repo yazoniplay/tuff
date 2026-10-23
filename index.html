@@ -10,7 +10,12 @@
 <style>
 :root{--bg:#f8fafc;--panel:#fff;--ink:#111827;--muted:#64748b;--line:#dbe3ee;--grid:rgba(100,116,139,.14);--accent:#6558e8;--shadow:0 14px 38px rgba(15,23,42,.08)}
 html.dark{--bg:#090d16;--panel:#111827;--ink:#f1f5f9;--muted:#94a3b8;--line:#293449;--grid:rgba(148,163,184,.10);--shadow:0 18px 48px rgba(0,0,0,.24);color-scheme:dark}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden;transition:background .2s,color .2s}
+*{box-sizing:border-box}
+@keyframes theme-reveal{from{clip-path:circle(0 at var(--theme-x,50vw) var(--theme-y,50vh))}to{clip-path:circle(150vmax at var(--theme-x,50vw) var(--theme-y,50vh))}}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-new(root){z-index:2;animation:theme-reveal .68s cubic-bezier(.2,.75,.2,1) both}
+@media(prefers-reduced-motion:reduce){::view-transition-new(root){animation-duration:.01ms}}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden;transition:background .2s,color .2s}
 button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .topbar{height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 22px;border-bottom:1px solid var(--line);background:var(--panel);position:relative;z-index:10}
 .brand{display:flex;align-items:center;gap:10px;font-weight:750;letter-spacing:-.03em}.brand-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#8175ff,#4f46e5);display:grid;place-items:center;color:white}.brand small{display:block;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase}
@@ -350,7 +355,8 @@ async function dispatchWorkflow(n){
   startWorkflowMonitor();
  }catch(e){toast("Dispatch failed: "+e.message)}
 }
-$("themeBtn").onclick=()=>{const dark=!document.documentElement.classList.contains("dark");document.documentElement.classList.toggle("dark",dark);localStorage.setItem(STORAGE.theme,dark?"dark":"light");$("themeBtn").innerHTML='<i data-lucide="'+(dark?"sun":"moon")+'" width="15"></i>';icons()};
+function applyTheme(dark){document.documentElement.classList.toggle("dark",dark);localStorage.setItem(STORAGE.theme,dark?"dark":"light");$("themeBtn").innerHTML='<i data-lucide="'+(dark?"sun":"moon")+'" width="15"></i>';icons()}
+$("themeBtn").onclick=(event)=>{const dark=!document.documentElement.classList.contains("dark");const x=event.clientX||window.innerWidth-34,y=event.clientY||34;document.documentElement.style.setProperty("--theme-x",x+"px");document.documentElement.style.setProperty("--theme-y",y+"px");if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches){applyTheme(dark);return}if(document.startViewTransition){document.startViewTransition(()=>applyTheme(dark))}else{applyTheme(dark)}};
 const REGISTRY_KEY="restructure.tools-ai-registry.v1";
  let registryTab="tools";
  function loadRegistry(){try{const x=JSON.parse(localStorage.getItem(REGISTRY_KEY)||"{}");return{tools:Array.isArray(x.tools)?x.tools:[],keys:Array.isArray(x.keys)?x.keys:[],models:Array.isArray(x.models)?x.models:[]}}catch(e){return{tools:[],keys:[],models:[]}}}
