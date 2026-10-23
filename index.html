@@ -191,7 +191,7 @@ const started=Date.now();let discovered=null;
 while(Date.now()-started<120000){
 await wait(5000);
 const runs=await getRuns();
-discovered=runs.find(r=>!beforeIds.has(r.id)&&r.event==="repository_dispatch"&&new Date(r.created_at).getTime()>=started+Date.now()-Date.now()-150000);
+discovered=runs.find(r=>!beforeIds.has(r.id)&&r.event==="repository_dispatch"&&new Date(r.created_at).getTime()>=started-150000);
 if(discovered){
 if(discovered.status==="completed"){
 if(discovered.conclusion==="success"){createWorkflowResultBlock(discovered);return}
