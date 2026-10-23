@@ -191,8 +191,12 @@ async function pollWorkflowRuns(initial){
   let seen;
   try{seen=JSON.parse(localStorage.getItem(key)||"null")}catch(e){seen=null}
   if(!Array.isArray(seen)){
-   localStorage.setItem(key,JSON.stringify(runs.filter(r=>r.status==="completed").map(r=>String(r.id)).slice(-500)));
+   const completed=runs.filter(r=>r.status==="completed").sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+   const latest=completed[0]||null;
+   const baseline=completed.slice(1).map(r=>String(r.id)).slice(0,499);
+   localStorage.setItem(key,JSON.stringify(baseline));
    workflowPollRepo=currentRepo;
+   if(latest)createWorkflowRunBlock(latest,null);
    if(!initial)toast("Workflow monitoring enabled for "+currentRepo+". New runs will appear here.");
    return;
   }
