@@ -1,0 +1,80 @@
+name: Background commit monitor
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: background-commit-monitor
+  cancel-in-progress: false
+
+jobs:
+  capture-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Tuff
+        uses: actions/checkout@v4
+
+      - name: Capture commits while Tuff is closed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_REPO: yazoniplay/yazoniiOS
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = 'data/commit-feed.json';
+          const target = process.env.TARGET_REPO;
+          const api = 'https://api.github.com/repos/' + target + '/commits?per_page=100';
+          (async () => {
+            const response = await fetch(api, {
+              headers: {
+                'Accept': 'application/vnd.github+json',
+                'Authorization': 'Bearer ' + process.env.GH_TOKEN,
+                'X-GitHub-Api-Version': '2022-11-28',
+                'User-Agent': 'Tuff-background-commit-monitor'
+              }
+            });
+            if (!response.ok) throw new Error('GitHub commits API: ' + response.status + ' ' + await response.text());
+            const commits = await response.json();
+            if (!Array.isArray(commits) || commits.length === 0) throw new Error('No commits returned for ' + target);
+            let feed = { repository: target, lastSeenSha: '', commits: [] };
+            try {
+              const saved = JSON.parse(fs.readFileSync(path, 'utf8'));
+              if (saved && saved.repository === target && Array.isArray(saved.commits)) feed = saved;
+            } catch (_) {}
+            const head = commits[0];
+            if (!feed.lastSeenSha) {
+              feed.lastSeenSha = head.sha;
+              feed.commits = [{ ...head, repository: target }];
+            } else {
+              const lastIndex = commits.findIndex(c => c.sha === feed.lastSeenSha);
+              const fresh = (lastIndex >= 0 ? commits.slice(0, lastIndex) : commits)
+                .reverse()
+                .map(c => ({ ...c, repository: target }));
+              if (fresh.length) {
+                const known = new Set(feed.commits.map(c => c.sha));
+                feed.commits.push(...fresh.filter(c => !known.has(c.sha)));
+                feed.lastSeenSha = head.sha;
+              }
+            }
+            feed.commits = feed.commits.slice(-1000);
+            fs.mkdirSync('data', { recursive: true });
+            fs.writeFileSync(path, JSON.stringify(feed, null, 2) + '\n');
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
+
+      - name: Save commit feed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/commit-feed.json
+          if git diff --cached --quiet; then
+            echo "No new commits to record."
+          else
+            git commit -m "chore: update background commit feed"
+            git push
+          fi
