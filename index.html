@@ -31,6 +31,51 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-vis
 .modal{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,6,23,.5)}.modal.open{display:flex}.modal-card{width:min(540px,100%);max-height:min(88dvh,760px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px}.modal-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.modal-title h2{font-size:18px;font-weight:800;margin:0}.connection-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin:8px 0}.connection-row select{min-width:0;width:100%;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font-size:11px}
 .toast{position:fixed;z-index:60;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.2s;background:#111827;color:#fff;padding:11px 15px;border-radius:12px;box-shadow:var(--shadow);font-size:12px;max-width:calc(100vw - 30px)}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:700px){.topbar{height:58px;padding:0 12px}.brand{font-size:13px}.brand small{display:none}.brand-mark{width:30px;height:30px}.actions{gap:4px}.btn{padding:8px;font-size:11px}.btn .btn-text{display:none}.layout{height:calc(100dvh - 58px)}.canvas-heading{top:14px;width:90%}.canvas-heading p{font-size:10px}.canvas-hint{display:none}.zoom-controls{left:10px;bottom:12px}.drawer{top:auto;right:0;left:0;bottom:0;width:100%;height:min(82dvh,720px);border-radius:20px 20px 0 0;border-left:0;border-top:1px solid var(--line);transform:translateY(102%)}.drawer.open{transform:translateY(0)}.drawer-head{padding:18px 18px 14px}.drawer-body{padding:16px 18px}.modal{align-items:flex-end;padding:0}.modal-card{border-radius:18px 18px 0 0;max-height:90dvh;padding:20px;width:100%}.connection-row{grid-template-columns:1fr 1fr auto}.connection-row select{font-size:10px;padding:8px}}
+
+/* Ambient motion: subtle, layered, and respectful of reduced-motion settings. */
+@keyframes ambient-drift{0%,100%{background-position:0 0,0 0,0 0,0 0}50%{background-position:36px -24px,-28px 22px,12px 12px,12px 12px}}
+@keyframes heading-arrive{from{opacity:0;translate:0 10px;filter:blur(5px)}to{opacity:1;translate:0 0;filter:blur(0)}}
+@keyframes soft-breathe{0%,100%{box-shadow:0 0 0 0 rgba(101,88,232,0)}50%{box-shadow:0 0 0 5px rgba(101,88,232,.07)}}
+@keyframes status-pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.0)}50%{box-shadow:0 0 0 4px rgba(34,197,94,.12)}}
+@keyframes brand-glint{0%,72%,100%{background-position:200% 0}35%{background-position:-100% 0}}
+.canvas-wrap{background-image:radial-gradient(ellipse at 16% 18%,rgba(101,88,232,.09),transparent 34%),radial-gradient(ellipse at 84% 78%,rgba(56,189,248,.08),transparent 32%),linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:100% 100%,100% 100%,24px 24px,24px 24px;animation:ambient-drift 32s ease-in-out infinite}
+.topbar{isolation:isolate;overflow:hidden}
+.topbar:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(110deg,transparent 15%,rgba(255,255,255,.2) 48%,transparent 70%);background-size:220% 100%;animation:brand-glint 12s ease-in-out infinite}
+.brand-mark{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease}
+.brand:hover .brand-mark{transform:rotate(-7deg) scale(1.06);box-shadow:0 5px 22px rgba(101,88,232,.28)}
+.canvas-heading{animation:heading-arrive .8s cubic-bezier(.2,.75,.2,1) both}
+.canvas-heading .kicker{animation:heading-arrive .7s .08s both}
+.canvas-heading h1{animation:heading-arrive .8s .13s both}
+.canvas-heading p{animation:heading-arrive .8s .22s both}
+.btn{position:relative;overflow:hidden;transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease,border-color .2s ease,background-color .2s ease}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 18px rgba(15,23,42,.09)}
+.btn:active:not(:disabled){transform:translateY(0) scale(.97);box-shadow:none}
+.btn.primary:hover:not(:disabled){box-shadow:0 7px 22px rgba(101,88,232,.3)}
+.btn:focus-visible,.field input:focus-visible,.field textarea:focus-visible,.field select:focus-visible{outline:3px solid rgba(101,88,232,.25);outline-offset:2px}
+.status-pill i{animation:status-pulse 2.4s ease-in-out infinite}
+.canvas-hint{animation:heading-arrive .8s .35s both;box-shadow:0 8px 28px rgba(15,23,42,.05);backdrop-filter:blur(12px)}
+.node{transform-box:fill-box;transform-origin:center;transition:filter .22s ease}
+.node:hover{filter:drop-shadow(0 12px 18px rgba(101,88,232,.16));}
+.node rect.card{transition:stroke .22s ease,stroke-width .22s ease,fill .22s ease}
+.node:hover rect.card{stroke:var(--accent);stroke-width:1.7}
+.node.selected{filter:drop-shadow(0 8px 16px rgba(101,88,232,.18))}
+.node.selected rect.card{animation:soft-breathe 3.2s ease-in-out infinite}
+.delete-control{transition:opacity .18s ease,transform .18s ease;transform-box:fill-box;transform-origin:center}
+.delete-control:hover{transform:scale(1.12)}
+.drawer{transition:transform .38s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease}
+.drawer.open{box-shadow:-18px 0 60px rgba(2,6,23,.12)}
+.drawer-head h2{animation:heading-arrive .35s ease both}
+.modal.open .modal-card{animation:modal-arrive .32s cubic-bezier(.2,.8,.2,1) both}
+@keyframes modal-arrive{from{opacity:0;transform:translateY(12px) scale(.985);filter:blur(3px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+.issue,.empty{transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+.issue:hover{transform:translateY(-2px);border-color:rgba(101,88,232,.45);box-shadow:0 7px 20px rgba(15,23,42,.05)}
+.field input,.field textarea,.field select{transition:border-color .2s ease,box-shadow .2s ease}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(101,88,232,.1);outline:none}
+.dark .topbar:after{background:linear-gradient(110deg,transparent 15%,rgba(255,255,255,.055) 48%,transparent 70%);background-size:220% 100%}
+.dark .btn:hover:not(:disabled){box-shadow:0 7px 22px rgba(0,0,0,.2)}
+@media(max-width:700px){.canvas-wrap{animation-duration:44s}.topbar:after{animation-duration:18s}}
+@media(prefers-reduced-motion:reduce){.canvas-wrap,.topbar:after,.brand-mark,.canvas-heading,.canvas-heading .kicker,.canvas-heading h1,.canvas-heading p,.status-pill i,.canvas-hint,.node.selected rect.card,.modal.open .modal-card{animation:none!important}.btn,.node,.node rect.card,.drawer,.issue,.field input,.field textarea,.field select{transition:none!important}}
+
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
