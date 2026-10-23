@@ -1,6 +1,6 @@
 {
   "repository": "yazoniplay/yazoniiOS",
-  "lastSeenSha": "08ba88a7b9641b22d4ab1b1a8d3d5d8f288e4727",
+  "lastSeenSha": "4a0764dd3bbfdc1f916f6fb02d73165bb18b19d2",
   "commits": [
     {
       "sha": "08ba88a7b9641b22d4ab1b1a8d3d5d8f288e4727",
@@ -81,6 +81,635 @@
           "sha": "d7a7465e0734c475484522f740709c9942472e71",
           "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/d7a7465e0734c475484522f740709c9942472e71",
           "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/d7a7465e0734c475484522f740709c9942472e71"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "71d6b2e3cfb6446b856368d744cdc55f9ce507f3",
+      "node_id": "C_kwDOUgta69oAKDcxZDZiMmUzY2ZiNjQ0NmI4NTYzNjhkNzQ0Y2RjNTVmOWNlNTA3ZjM",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T16:54:48Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-10-23T16:54:48Z"
+        },
+        "message": "Add new file 'lols' with content 'lolssss'",
+        "tree": {
+          "sha": "db18f42709f877d9e468ffff323490f9392b8482",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/db18f42709f877d9e468ffff323490f9392b8482"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/71d6b2e3cfb6446b856368d744cdc55f9ce507f3",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJq25FYCRC1aQ7uu5UhlAAAx0MQAEv9CZ8dC78zIabQveZrnyyE\nMMCrAGX2qItUj2C5VKLrfWHTaq30r3r8G0tCr6jqNujYH6Iu9dxWdduDeFupdUY/\nSxDfEydoj8Qvh/ojXnavywOgdDHG9PoYP9eALoG4lm1ArMEODHD/WMGpBvMLpr5j\nsxAaDAi0HisvkvbIr5UemxstJNWhAQgH8JnErpNrR4gTobJHBa6F5I+SIyA+OviA\nM1ODYnQQQiKucjh1VRulG08IVBmxV/fNmG90NVCZjFkJMmYvh3herlGuC+9Rpv3U\nZqXVbhrC43fNVHbaHt8CYEtVvcSg10rdHIdfsp+T6O7MP55sClww/uD2aEYLcCqf\n0pbe/zJeeMIASCGeST/Z/2o9vMAZuTvuioxrV5Dl9JWdixLycYxbO3RUDmd45eKI\nEHIBZ1JJ2Zg9+rTnECQ1uQv7Nl4UvukIo11im7hsMM+7bDj3wLdAANGFj3IpR4X3\nVAb8nV53EFZeKING7Le49Wt5LJeNdTmBXVxu3VtIVbu/59Eg2wepf7fb1677uPKo\nY0jJJlodqQgAP/QY2w5Aq0d1MasgpcgYCgicqDa0hr76t5Q+IPB7EWzgKAyLLHXZ\nG0KYXZcqlP4UlxUV00gEU0jSNxEFNPzjvfejjCeifvKbSQuz87rpALCQTnyHi4RJ\nV0l1as90s0uWegQ4K4ub\n=I6Kr\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree db18f42709f877d9e468ffff323490f9392b8482\nparent 08ba88a7b9641b22d4ab1b1a8d3d5d8f288e4727\nauthor yazoniplay <yazan.mahmoud2@outlook.com> 1792774488 +0200\ncommitter GitHub <noreply@github.com> 1792774488 +0200\n\nAdd new file 'lols' with content 'lolssss'",
+          "verified_at": "2026-10-23T16:54:49Z"
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/71d6b2e3cfb6446b856368d744cdc55f9ce507f3",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/71d6b2e3cfb6446b856368d744cdc55f9ce507f3",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/71d6b2e3cfb6446b856368d744cdc55f9ce507f3/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "08ba88a7b9641b22d4ab1b1a8d3d5d8f288e4727",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/08ba88a7b9641b22d4ab1b1a8d3d5d8f288e4727",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/08ba88a7b9641b22d4ab1b1a8d3d5d8f288e4727"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "6395ccfe5efbeb956ec205fece8ff54c3c9e01ed",
+      "node_id": "C_kwDOUgta69oAKDYzOTVjY2ZlNWVmYmViOTU2ZWMyMDVmZWNlOGZmNTRjM2M5ZTAxZWQ",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:34:29Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:34:29Z"
+        },
+        "message": "ci: add intentional workflow failure test for Tuff auto-fix",
+        "tree": {
+          "sha": "6a7b7258c9cb88fa16eb9a61b0c0fc6a1a937820",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/6a7b7258c9cb88fa16eb9a61b0c0fc6a1a937820"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/6395ccfe5efbeb956ec205fece8ff54c3c9e01ed",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/6395ccfe5efbeb956ec205fece8ff54c3c9e01ed",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/6395ccfe5efbeb956ec205fece8ff54c3c9e01ed",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/6395ccfe5efbeb956ec205fece8ff54c3c9e01ed/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "71d6b2e3cfb6446b856368d744cdc55f9ce507f3",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/71d6b2e3cfb6446b856368d744cdc55f9ce507f3",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/71d6b2e3cfb6446b856368d744cdc55f9ce507f3"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "f0d389980005d37f53b9bf72b160ad22deb3aa5c",
+      "node_id": "C_kwDOUgta69oAKGYwZDM4OTk4MDAwNWQzN2Y1M2I5YmY3MmIxNjBhZDIyZGViM2FhNWM",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:36:18Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:36:18Z"
+        },
+        "message": "test: replace deliberate exit with reproducible fixable regression",
+        "tree": {
+          "sha": "a81c480cd36e8bfa2c31537f42e9ac8b06e77e1b",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/a81c480cd36e8bfa2c31537f42e9ac8b06e77e1b"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/f0d389980005d37f53b9bf72b160ad22deb3aa5c",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/f0d389980005d37f53b9bf72b160ad22deb3aa5c",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/f0d389980005d37f53b9bf72b160ad22deb3aa5c",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/f0d389980005d37f53b9bf72b160ad22deb3aa5c/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "6395ccfe5efbeb956ec205fece8ff54c3c9e01ed",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/6395ccfe5efbeb956ec205fece8ff54c3c9e01ed",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/6395ccfe5efbeb956ec205fece8ff54c3c9e01ed"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "d9e91fc8b8829fb2ac9f8181af63669bb0709669",
+      "node_id": "C_kwDOUgta69oAKGQ5ZTkxZmM4Yjg4MjlmYjJhYzlmODE4MWFmNjM2NjliYjA3MDk2Njk",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:36:22Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:36:22Z"
+        },
+        "message": "test: add isolated off-by-one fixture for Gemini auto-fix",
+        "tree": {
+          "sha": "3b5a2946b9a7346c8df31d00b666225a87758622",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/3b5a2946b9a7346c8df31d00b666225a87758622"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/d9e91fc8b8829fb2ac9f8181af63669bb0709669",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/d9e91fc8b8829fb2ac9f8181af63669bb0709669",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/d9e91fc8b8829fb2ac9f8181af63669bb0709669",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/d9e91fc8b8829fb2ac9f8181af63669bb0709669/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "f0d389980005d37f53b9bf72b160ad22deb3aa5c",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/f0d389980005d37f53b9bf72b160ad22deb3aa5c",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/f0d389980005d37f53b9bf72b160ad22deb3aa5c"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "3f9b7f7109c182aec86adfb0746cfe311da0e8a5",
+      "node_id": "C_kwDOUgta69oAKDNmOWI3ZjcxMDljMTgyYWVjODZhZGZiMDc0NmNmZTMxMWRhMGU4YTU",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:36:26Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:36:26Z"
+        },
+        "message": "test: assert expected total in auto-fix fixture",
+        "tree": {
+          "sha": "230c4b37c163640d86a95b87a1a0fa6b833c2925",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/230c4b37c163640d86a95b87a1a0fa6b833c2925"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/3f9b7f7109c182aec86adfb0746cfe311da0e8a5",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/3f9b7f7109c182aec86adfb0746cfe311da0e8a5",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/3f9b7f7109c182aec86adfb0746cfe311da0e8a5",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/3f9b7f7109c182aec86adfb0746cfe311da0e8a5/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "d9e91fc8b8829fb2ac9f8181af63669bb0709669",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/d9e91fc8b8829fb2ac9f8181af63669bb0709669",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/d9e91fc8b8829fb2ac9f8181af63669bb0709669"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "45c4cf7e44fbabd4ddd312412cf9cb184f0d2f6d",
+      "node_id": "C_kwDOUgta69oAKDQ1YzRjZjdlNDRmYmFiZDRkZGQzMTI0MTJjZjljYjE4NGYwZDJmNmQ",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:43:04Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:43:04Z"
+        },
+        "message": "fix: Fixed the failing regression test in the isolated Gemini auto-fix",
+        "tree": {
+          "sha": "6cd59249b55d2ea1fc5c557e20ece75302ce6baf",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/6cd59249b55d2ea1fc5c557e20ece75302ce6baf"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/45c4cf7e44fbabd4ddd312412cf9cb184f0d2f6d",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/45c4cf7e44fbabd4ddd312412cf9cb184f0d2f6d",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/45c4cf7e44fbabd4ddd312412cf9cb184f0d2f6d",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/45c4cf7e44fbabd4ddd312412cf9cb184f0d2f6d/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "3f9b7f7109c182aec86adfb0746cfe311da0e8a5",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/3f9b7f7109c182aec86adfb0746cfe311da0e8a5",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/3f9b7f7109c182aec86adfb0746cfe311da0e8a5"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "f83e871e4c858a6fe854c90ebbab4cf20f62eae0",
+      "node_id": "C_kwDOUgta69oAKGY4M2U4NzFlNGM4NThhNmZlODU0YzkwZWJiYWI0Y2YyMGY2MmVhZTA",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-23T18:43:59Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-10-23T18:43:59Z"
+        },
+        "message": "Merge pull request #1 from yazoniplay/tuff/gemini-fix-40004677950-mvlbi9sp\n\nfix: Fixed the failing regression test in the isolated Gemini auto-fix fixture by removing the intentional off-by-one er",
+        "tree": {
+          "sha": "6cd59249b55d2ea1fc5c557e20ece75302ce6baf",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/6cd59249b55d2ea1fc5c557e20ece75302ce6baf"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/f83e871e4c858a6fe854c90ebbab4cf20f62eae0",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJq26rvCRC1aQ7uu5UhlAAAadQQAKC0iQ4RXRLqh9JFWz9EAX7o\ne/HNjZ5joVntKSgYktBURPP05AcUhYW0jLwAEFntzlsvGdopOxNdBbbm7R7g2/vB\nMxH3/wwQXgOHwmEHUZFydLHxT7KyJ5HHqerfg/KjY1Zud65zOVEcq9PozbislUci\nVIm4crFq0CpNZSeGRWNbHcgvDF/AxpyMaQHKs1m8gwqcdeZyb+RbD8NTPl7vC6h3\nP8n06Zt/LKeTr7OOxEnV1nT6xxCKKjzh7s60SBWpfERySHDuSRd9JIeeRfbOpsq+\nUqF5Rz2s/wnVCfI2kFmZx+L5Km/ELKfq7sMs9UWjakvBAynTlsYFFxSJfq5DL+TC\nQR2PsXLyKgxLJ3qiqQLB7imqGeFJP9kh6sn/duGFpgpSgdFjwdCLOvDPAmi4/YF4\nF/ljhUMaf8sxSQfV5OOzlQ1qvshYlJEkpEPkT7p7yrq8h0H7yplV4RYS4k2YhAj9\ne7XIZGW3BuYuvC0gM4FN/ucy38GjPWAMM8MfJD+0plyDSqM7ZJT4t1vQAac3a224\nDZbBMcmJhLhBHF5IIGlxrx7hrfpJwrU6bndbwnE7JhtRuIa/WLUNN4TB+o4WVM94\nj3v5EUPlxbbfXnXobeZU7gYYQEH0BXGtea1rB0KnlTvut4wYiIYSabbrwOFRQXQs\nmMghIzS441tBhD+M4XNR\n=kliS\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 6cd59249b55d2ea1fc5c557e20ece75302ce6baf\nparent 3f9b7f7109c182aec86adfb0746cfe311da0e8a5\nparent 45c4cf7e44fbabd4ddd312412cf9cb184f0d2f6d\nauthor yazoniplay <yazan.mahmoud2@outlook.com> 1792781039 +0200\ncommitter GitHub <noreply@github.com> 1792781039 +0200\n\nMerge pull request #1 from yazoniplay/tuff/gemini-fix-40004677950-mvlbi9sp\n\nfix: Fixed the failing regression test in the isolated Gemini auto-fix fixture by removing the intentional off-by-one er",
+          "verified_at": "2026-10-23T18:43:59Z"
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/f83e871e4c858a6fe854c90ebbab4cf20f62eae0",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/f83e871e4c858a6fe854c90ebbab4cf20f62eae0",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/f83e871e4c858a6fe854c90ebbab4cf20f62eae0/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "3f9b7f7109c182aec86adfb0746cfe311da0e8a5",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/3f9b7f7109c182aec86adfb0746cfe311da0e8a5",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/3f9b7f7109c182aec86adfb0746cfe311da0e8a5"
+        },
+        {
+          "sha": "45c4cf7e44fbabd4ddd312412cf9cb184f0d2f6d",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/45c4cf7e44fbabd4ddd312412cf9cb184f0d2f6d",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/45c4cf7e44fbabd4ddd312412cf9cb184f0d2f6d"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "4a0764dd3bbfdc1f916f6fb02d73165bb18b19d2",
+      "node_id": "C_kwDOUgta69oAKDRhMDc2NGRkM2JiZmRjMWY5MTZmNmZiMDJkNzMxNjViYjE4YjE5ZDI",
+      "commit": {
+        "author": {
+          "name": "github-actions[bot]",
+          "email": "41898282+github-actions[bot]@noreply.github.com",
+          "date": "2026-10-23T19:09:35Z"
+        },
+        "committer": {
+          "name": "github-actions[bot]",
+          "email": "41898282+github-actions[bot]@noreply.github.com",
+          "date": "2026-10-23T19:09:35Z"
+        },
+        "message": "Update prospect database",
+        "tree": {
+          "sha": "7b02baa02e1a82b4b55adcc15b9b345593e92a41",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/7b02baa02e1a82b4b55adcc15b9b345593e92a41"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/4a0764dd3bbfdc1f916f6fb02d73165bb18b19d2",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/4a0764dd3bbfdc1f916f6fb02d73165bb18b19d2",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/4a0764dd3bbfdc1f916f6fb02d73165bb18b19d2",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/4a0764dd3bbfdc1f916f6fb02d73165bb18b19d2/comments",
+      "author": null,
+      "committer": null,
+      "parents": [
+        {
+          "sha": "f83e871e4c858a6fe854c90ebbab4cf20f62eae0",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/f83e871e4c858a6fe854c90ebbab4cf20f62eae0",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/f83e871e4c858a6fe854c90ebbab4cf20f62eae0"
         }
       ],
       "repository": "yazoniplay/yazoniiOS"
