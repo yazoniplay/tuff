@@ -19,7 +19,7 @@ Tuff is an open-source, modular social media workflow with a web dashboard, Gemi
 
 1. Open **Settings → Secrets and variables → Actions → Secrets**.
 2. Add `GEMINI_API_KEY` using an API key from Google AI Studio.
-3. Optionally add repository variable `GEMINI_MODEL` (default: `gemini-2.5-flash`).
+3. Optionally add repository variable `GEMINI_MODEL` (default: `gemini-3.5-flash-lite`).
 4. Never put the Gemini key in `app.js`, HTML, GitHub Pages, Issues, or a committed `.env`. The browser must not call Gemini directly because visitors could extract the key.
 5. Add variable `RESEARCH_FEEDS` as comma-separated HTTPS RSS/Atom feed URLs.
 
