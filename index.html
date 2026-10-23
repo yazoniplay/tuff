@@ -153,6 +153,12 @@ function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":
 function openInspector(id){selected=id;const n=nodeById(id);if(!n)return;render();$("inspectCategory").textContent=n.category;$("inspectTitle").textContent=n.title;$("inspectRole").textContent=n.role;const body=$("inspectBody");body.innerHTML="";
 if(n.commitUrl){const link=document.createElement("a");link.className="btn primary";link.href=n.commitUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Open commit on GitHub";link.style.marginBottom="12px";body.appendChild(link)}
  if(n.workflowRunUrl){const link=document.createElement("a");link.className="btn primary";link.href=n.workflowRunUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Open workflow run on GitHub";link.style.marginBottom="12px";body.appendChild(link)}
+ if(n.workflowRunId){
+  const pipeline=document.createElement("section");pipeline.style.cssText="margin:0 0 18px;padding:12px;border:1px solid var(--line);border-radius:10px";
+  pipeline.innerHTML='<div class="section-label">Pipeline inspector</div><p style="font-size:12px;color:var(--muted);margin:0 0 10px">Live GitHub Actions run details, every job and step, plus tool/model references from your Tools & AI registry.</p><button class="btn primary" id="loadPipelineInspector"><i data-lucide="workflow" width="14"></i>Load step-by-step pipeline</button><div id="pipelineInspector" style="margin-top:12px"><div class="empty">Load a run to inspect its real jobs and steps.</div></div>';
+  body.appendChild(pipeline);
+  $("loadPipelineInspector").onclick=()=>loadPipelineInspector(n);
+ }
  if(n.workflowConclusion&&n.workflowConclusion!=="success"){
   const failure=document.createElement("section");failure.style.cssText="margin:0 0 18px;padding:12px;border:1px solid var(--line);border-radius:10px";
   failure.innerHTML='<div class="section-label">Workflow failure assistant</div><p style="font-size:12px;color:var(--muted);margin:0 0 10px">Gemini will inspect the run status and failed job/step metadata, then propose a fix. Review all suggested changes before applying them.</p><button class="btn primary" id="analyzeWorkflowFailure"><i data-lucide="brain-circuit" width="14"></i>Analyze failure & propose fix</button><div id="workflowDiagnosis" class="empty" style="margin-top:10px">No diagnosis generated yet.</div>';
@@ -360,6 +366,45 @@ const REGISTRY_KEY="restructure.tools-ai-registry.v1";
  }
  document.querySelectorAll("[data-registry-tab]").forEach(b=>b.onclick=()=>{registryTab=b.dataset.registryTab;renderRegistry()});
  $("registryBtn").onclick=()=>openRegistry("tools");
+async function loadPipelineInspector(n){
+ const out=$("pipelineInspector");if(!out)return;
+ if(!repo()||!token()){out.textContent="Connect GitHub first. The token needs Actions: Read permission.";return}
+ const runId=String(n.workflowRunId||"");if(!runId){out.textContent="This block has no workflow run ID.";return}
+ out.innerHTML='<div class="empty">Loading actual workflow run, jobs and steps…</div>';
+ try{
+  const base="https://api.github.com/repos/"+repo()+"/actions/runs/"+encodeURIComponent(runId);
+  const headers=githubHeaders();
+  const [runRes,jobsRes]=await Promise.all([fetch(base,{headers}),fetch(base+"/jobs?per_page=100",{headers})]);
+  if(!runRes.ok)throw new Error("Could not read run metadata ("+runRes.status+"). Check repository and Actions: Read access.");
+  if(!jobsRes.ok)throw new Error("Could not read job/step metadata ("+jobsRes.status+"). Check Actions: Read access.");
+  const run=await runRes.json(),data=await jobsRes.json(),jobs=Array.isArray(data.jobs)?data.jobs:[];
+  const reg=typeof loadRegistry==="function"?loadRegistry():{tools:[],keys:[],models:[]};
+  const searchable=[run.name||"",...jobs.map(j=>j.name||""),...jobs.flatMap(j=>(j.steps||[]).map(s=>s.name||""))].join(" ").toLowerCase();
+  const mentionedTools=(reg.tools||[]).filter(t=>t.name&&searchable.includes(String(t.name).toLowerCase()));
+  const modelMatches=(reg.models||[]).filter(m=>(m.name&&searchable.includes(String(m.name).toLowerCase()))||(m.model&&searchable.includes(String(m.model).toLowerCase())));
+  const statusColor=c=>c==="success"?"#16a34a":(["failure","timed_out","cancelled","action_required"].includes(c)?"#dc2626":"#d97706");
+  const safe=s=>escapeHTML(String(s==null?"—":s));
+  const duration=(a,b)=>{if(!a||!b)return "";const sec=Math.max(0,Math.round((new Date(b)-new Date(a))/1000));return sec>=60?Math.floor(sec/60)+"m "+(sec%60)+"s":sec+"s"};
+  let html='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"><span class="chip">'+safe(run.event||"event")+'</span><span class="chip">'+safe(run.head_branch||"branch unknown")+'</span><span class="chip" style="color:'+statusColor(run.conclusion||run.status)+'">'+safe(run.conclusion||run.status||"unknown")+'</span></div>';
+  html+='<div style="font-size:12px;color:var(--muted);margin-bottom:12px">Run #'+safe(run.run_number)+' · '+safe(run.head_sha?run.head_sha.slice(0,7):"no SHA")+' · '+safe(duration(run.run_started_at,run.updated_at)||"duration unavailable")+' · '+jobs.length+' job(s)</div>';
+  if(!jobs.length)html+='<div class="empty">No jobs returned. The run may still be queued, or GitHub has no visible job records yet.</div>';
+  jobs.forEach((job,ji)=>{
+   const jc=job.conclusion||job.status||"unknown";
+   html+='<div style="border:1px solid var(--line);border-radius:9px;padding:10px;margin:8px 0"><div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><strong style="font-size:12px">'+(ji+1)+'. '+safe(job.name)+'</strong><span style="font-size:10px;font-weight:700;color:'+statusColor(jc)+'">'+safe(jc)+'</span></div><div style="font-size:10px;color:var(--muted);margin:4px 0 8px">'+safe(job.runner_name||job.labels?.join(", ")||"runner not reported")+(job.started_at?" · "+safe(duration(job.started_at,job.completed_at||new Date().toISOString())):"")+'</div>';
+   const steps=Array.isArray(job.steps)?job.steps:[];
+   if(!steps.length)html+='<div style="font-size:11px;color:var(--muted)">No step details available yet.</div>';
+   steps.forEach((step,si)=>{const sc=step.conclusion||step.status||"pending";html+='<div style="display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:6px;align-items:start;padding:6px 0;border-top:1px solid var(--line)"><span style="font-size:10px;color:var(--muted)">'+(si+1)+'</span><span style="font-size:11px;overflow-wrap:anywhere">'+safe(step.name)+'</span><span style="font-size:10px;color:'+statusColor(sc)+';white-space:nowrap">'+safe(sc)+'</span></div>'});
+   html+='</div>';
+  });
+  html+='<div style="border-top:1px solid var(--line);padding-top:10px;margin-top:12px"><div class="section-label">Tools & AI used</div>';
+  if(mentionedTools.length){html+='<div style="font-size:11px;font-weight:700;margin:6px 0">Registry tools mentioned by name in workflow/job/step labels</div>'+mentionedTools.map(t=>'<div style="font-size:11px;padding:5px 0">🔧 '+safe(t.name)+(t.category?' · '+safe(t.category):"")+(t.url?' · <a target="_blank" rel="noopener noreferrer" href="'+safe(t.url)+'">docs</a>':"")+'</div>').join("")}
+  else html+='<div style="font-size:11px;color:var(--muted);margin:6px 0">No registry tools matched by name in the run labels. This does not prove no tools were used; workflow YAML or logs are needed to identify action/API calls.</div>';
+  if(modelMatches.length)html+='<div style="font-size:11px;font-weight:700;margin:8px 0 4px">AI models matched by name</div>'+modelMatches.map(m=>'<div style="font-size:11px;padding:4px 0">🧠 '+safe(m.name)+' · '+safe(m.provider||"provider unknown")+' · '+safe(m.model||"model ID not recorded")+' — '+safe(m.role||"role not recorded")+'</div>').join("");
+  else html+='<div style="font-size:11px;color:var(--muted);margin:6px 0">No AI model could be confirmed from step labels. Add explicit model names to the workflow or inspect its YAML/logs.</div>';
+  html+='<div style="font-size:10px;color:var(--muted);margin-top:8px">Accuracy note: GitHub supplies real run/job/step status here. Registry matches are name-based hints, not proof that a tool or model was invoked. Secrets and secret values are never displayed.</div></div>';
+  out.innerHTML=html;
+ }catch(e){out.textContent="Could not load pipeline details: "+e.message}
+}
 async function analyzeWorkflowFailure(n){
  const out=$("workflowDiagnosis");if(!out)return;
  const key=localStorage.getItem(STORAGE.aiKey);if(!key){out.textContent="No Gemini API key configured. Open AI briefs and add your Gemini key.";return}
