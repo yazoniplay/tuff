@@ -157,56 +157,83 @@ $("closeInspector").onclick=closeInspector;$("scrim").onclick=closeInspector;
 function repo(){return(localStorage.getItem(STORAGE.repo)||"").trim()}function token(){return localStorage.getItem(STORAGE.token)||""}
 function githubHeaders(){const h={"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};if(token())h.Authorization="Bearer "+token();return h}
 $("githubBtn").onclick=()=>{const r=repo().split("/");$("repoInput").value=r.length===2?repo():"";$("tokenInput").value=token();$("githubMessage").textContent="";showModal("githubModal")};
-$("saveGithub").onclick=async()=>{const r=$("repoInput").value.trim(),t=$("tokenInput").value.trim();if(!/^[^/ ]+\/[^/ ]+$/.test(r))return $("githubMessage").textContent="Enter a valid owner/repo name.";if(!t)return $("githubMessage").textContent="Enter a token with repository access.";localStorage.setItem(STORAGE.repo,r);localStorage.setItem(STORAGE.token,t);$("githubMessage").textContent="Testing repository access…";try{const res=await fetch("https://api.github.com/repos/"+r,{headers:githubHeaders()});if(!res.ok)throw new Error(res.status+" "+res.statusText);const data=await res.json();$("githubMessage").textContent="Connected to "+data.full_name+".";updateGithubStatus(true);toast("GitHub connected.");}catch(e){$("githubMessage").textContent="Connection failed: "+e.message;updateGithubStatus(false)}};
+$("saveGithub").onclick=async()=>{const r=$("repoInput").value.trim(),t=$("tokenInput").value.trim();if(!/^[^/ ]+\/[^/ ]+$/.test(r))return $("githubMessage").textContent="Enter a valid owner/repo name.";if(!t)return $("githubMessage").textContent="Enter a token with repository access.";localStorage.setItem(STORAGE.repo,r);localStorage.setItem(STORAGE.token,t);$("githubMessage").textContent="Testing repository access…";try{const res=await fetch("https://api.github.com/repos/"+r,{headers:githubHeaders()});if(!res.ok)throw new Error(res.status+" "+res.statusText);const data=await res.json();$("githubMessage").textContent="Connected to "+data.full_name+". Workflow monitoring will start; existing runs are used as the initial baseline.";updateGithubStatus(true);startWorkflowMonitor();toast("GitHub connected and workflow monitoring enabled.");}catch(e){$("githubMessage").textContent="Connection failed: "+e.message;updateGithubStatus(false)}};
 $("clearGithub").onclick=()=>{localStorage.removeItem(STORAGE.repo);localStorage.removeItem(STORAGE.token);$("repoInput").value="";$("tokenInput").value="";$("githubMessage").textContent="Disconnected. Stored credentials removed from this browser.";updateGithubStatus(false)};
 function updateGithubStatus(ok){const el=$("connectionStatus");el.innerHTML='<i style="background:'+(ok?"#22c55e":"#94a3b8")+'"></i><span>'+(ok?"GitHub connected":"Local canvas")+'</span>'}
 async function fetchIssues(n){const root=$("issueList");root.innerHTML='<div class="empty">Loading issues…</div>';if(!repo())return root.innerHTML='<div class="empty">Connect GitHub first using the GitHub button.</div>';try{const labels=(n.labels||[]).join(",");const url="https://api.github.com/repos/"+repo()+"/issues?state=open&per_page=30"+(labels?"&labels="+encodeURIComponent(labels):"");const res=await fetch(url,{headers:githubHeaders()});if(!res.ok)throw new Error(res.status+" "+res.statusText);const list=(await res.json()).filter(x=>!x.pull_request);root.innerHTML="";if(!list.length){root.innerHTML='<div class="empty">No open issues found for this module’s labels.</div>';return}list.forEach(issue=>{const el=document.createElement("div");el.className="issue";el.innerHTML='<a target="_blank" rel="noopener noreferrer" href="'+escapeHTML(issue.html_url)+'">#'+issue.number+" "+escapeHTML(issue.title)+'</a><p>'+escapeHTML(issue.state)+' · '+escapeHTML(issue.labels.map(l=>l.name).join(", ")||"unlabeled")+'</p>';root.appendChild(el)})}catch(e){root.innerHTML='<div class="empty">Could not load issues: '+escapeHTML(e.message)+'. Check repository, token permissions, and rate limits.</div>'}}
+function workflowSeenKey(){return "restructure.github.workflowSeen.v1:"+repo().toLowerCase()}
+function readSeenRuns(){try{return JSON.parse(localStorage.getItem(workflowSeenKey())||"[]")}catch(e){return []}}
+function saveSeenRun(id){const ids=readSeenRuns();if(!ids.includes(String(id)))ids.push(String(id));localStorage.setItem(workflowSeenKey(),JSON.stringify(ids.slice(-500)))}
+function createWorkflowRunBlock(run,sourceId){
+ const id="workflow-run-"+run.id;
+ if(nodeById(id))return false;
+ const source=nodeById(sourceId)||nodeById(selected)||nodes[0];
+ const title=(run.name||"GitHub Actions workflow").trim()||"GitHub Actions workflow";
+ const conclusion=run.conclusion||run.status||"unknown";
+ const successful=conclusion==="success";
+ const block={id,title:"Workflow · "+title,category:"GITHUB ACTIONS · "+String(conclusion).toUpperCase(),role:"Automatically detected GitHub Actions run in "+repo()+". This block records the workflow result and links to the original run.",icon:"activity",x:Math.round((source?source.x+source.w+70:120)+((nodes.filter(n=>n.category.startsWith("GITHUB ACTIONS")).length%3)*35)),y:Math.round((source?source.y:140)+((nodes.filter(n=>n.category.startsWith("GITHUB ACTIONS")).length%4)*185)),w:260,h:170,items:["Status: "+conclusion,"Run #"+run.run_number,"Branch: "+(run.head_branch||"unknown"),"Event: "+(run.event||"unknown"),"Repository: "+repo()],tasks:[],triggers:["workflow_run_completed"],labels:["github-actions","workflow-run",conclusion],workflowRunId:run.id,workflowRunUrl:run.html_url,workflowName:title,workflowConclusion:conclusion};
+ nodes.push(block);
+ if(source&&!edges.some(e=>e.from===source.id&&e.to===id))edges.push({id:"e-workflow-"+run.id,from:source.id,to:id,style:"flow"});
+ saveSeenRun(run.id);persist();render();fillNodeSelects();updateConnectionList();
+ toast("Workflow run added: "+title+" ("+conclusion+").");
+ return true;
+}
+let workflowPollTimer=null,workflowPollBusy=false,workflowPollRepo="";
+async function pollWorkflowRuns(initial){
+ if(workflowPollBusy||!repo()||!token())return;
+ workflowPollBusy=true;
+ const currentRepo=repo();
+ try{
+  const res=await fetch("https://api.github.com/repos/"+currentRepo+"/actions/runs?per_page=30",{headers:githubHeaders()});
+  if(!res.ok)throw new Error("Actions API returned "+res.status+". Token needs Actions: Read access.");
+  const data=await res.json(),runs=Array.isArray(data.workflow_runs)?data.workflow_runs:[];
+  const key="restructure.github.workflowSeen.v1:"+currentRepo.toLowerCase();
+  let seen;
+  try{seen=JSON.parse(localStorage.getItem(key)||"null")}catch(e){seen=null}
+  if(!Array.isArray(seen)){
+   localStorage.setItem(key,JSON.stringify(runs.map(r=>String(r.id)).slice(-500)));
+   workflowPollRepo=currentRepo;
+   if(!initial)toast("Workflow monitoring enabled for "+currentRepo+". New runs will appear here.");
+   return;
+  }
+  const seenSet=new Set(seen.map(String));
+  const fresh=runs.filter(r=>!seenSet.has(String(r.id))&&r.status==="completed").reverse();
+  for(const run of fresh){
+   if(repo()!==currentRepo)break;
+   createWorkflowRunBlock(run,null);
+   seenSet.add(String(run.id));
+  }
+  // Mark newly observed in-progress runs too, but allow their completion to be detected on a later poll.
+  for(const run of runs){if(run.status!=="completed"&&!seenSet.has(String(run.id)))seenSet.add(String(run.id))}
+  localStorage.setItem(key,JSON.stringify(Array.from(seenSet).slice(-500)));
+  workflowPollRepo=currentRepo;
+ }catch(e){
+  if(initial)toast("Workflow monitor could not start: "+e.message);
+ }finally{workflowPollBusy=false}
+}
+function startWorkflowMonitor(){
+ if(workflowPollTimer)clearInterval(workflowPollTimer);
+ workflowPollRepo=repo();
+ if(!repo()||!token())return;
+ pollWorkflowRuns(true);
+ workflowPollTimer=setInterval(()=>{if(repo()&&token())pollWorkflowRuns(false)},20000);
+}
 async function dispatchWorkflow(n){
-if(!repo()||!token()){toast("Connect GitHub with a repository token first.");showModal("githubModal");return}
-if(!confirm("Dispatch workflow for “"+n.title+"”? Tuff will watch for a successful GitHub Actions run and then add a result block."))return;
-const base="https://api.github.com/repos/"+repo();
-const payload={module_id:n.id,module_title:n.title,tasks:n.tasks,triggers:n.triggers,labels:n.labels,source:"restructure-ai-canvas"};
-const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-async function getRuns(){const r=await fetch(base+"/actions/runs?event=repository_dispatch&per_page=20",{headers:githubHeaders()});if(!r.ok)throw new Error("Could not read Actions runs ("+r.status+"). Ensure the token has Actions: Read.");const d=await r.json();return Array.isArray(d.workflow_runs)?d.workflow_runs:[]}
-function createWorkflowResultBlock(run){
-const id="workflow-run-"+run.id;
-if(nodeById(id)){toast("This workflow run already has a block.");return}
-const source=nodeById(n.id)||n;
-const status=run.conclusion||run.status||"completed";
-const title="Workflow · "+(payload.module_title||"Module");
-const block={id,title,category:"GITHUB AUTOMATION",role:"GitHub Actions run completed successfully. This block records the result of the dispatched workflow for "+(payload.module_title||"the selected module")+".",icon:"activity",x:Math.round(source.x+source.w+75),y:Math.round(source.y+15),w:250,h:160,items:["Run #"+run.run_number,"Status: "+status,"Workflow: "+(run.name||"GitHub Actions"),"Repository: "+repo()],tasks:payload.tasks||[],triggers:["workflow_completed"],labels:[...(payload.labels||[]),"github-actions","workflow-success"],workflowRunId:run.id,workflowRunUrl:run.html_url};
-nodes.push(block);
-if(!edges.some(e=>e.from===source.id&&e.to===id))edges.push({id:"e-workflow-"+run.id,from:source.id,to:id,style:"flow"});
-persist();render();fillNodeSelects();updateConnectionList();openInspector(id);
-toast("Workflow succeeded — result block added to Tuff.");
-}
-try{
-let before=[];
-try{before=await getRuns()}catch(e){toast(e.message);return}
-const beforeIds=new Set(before.map(r=>r.id));
-const res=await fetch(base+"/dispatches",{method:"POST",headers:{...githubHeaders(),"Content-Type":"application/json"},body:JSON.stringify({event_type:"restructure_module_action",client_payload:payload})});
-if(!res.ok){const body=await res.text();throw new Error(res.status+" "+body.slice(0,180))}
-toast("Dispatch accepted. Waiting for GitHub Actions…");
-const started=Date.now();let discovered=null;
-while(Date.now()-started<120000){
-await wait(5000);
-const runs=await getRuns();
-discovered=runs.find(r=>!beforeIds.has(r.id)&&r.event==="repository_dispatch"&&new Date(r.created_at).getTime()>=started-150000);
-if(discovered){
-if(discovered.status==="completed"){
-if(discovered.conclusion==="success"){createWorkflowResultBlock(discovered);return}
-toast("Workflow finished: "+(discovered.conclusion||"failed")+". No success block was added.");return;
-}
-toast("Workflow found — status: "+discovered.status+". Waiting for completion…");
-}
-}
-toast("Dispatch was accepted, but no completed workflow run was detected. Check the repository Actions tab and ensure a workflow listens for repository_dispatch with type restructure_module_action.");
-}catch(e){toast("Dispatch failed: "+e.message)}
+ if(!repo()||!token()){toast("Connect GitHub with a repository token first.");showModal("githubModal");return}
+ if(!confirm("Dispatch workflow for “"+n.title+"”? Tuff will monitor this repository and add a block when any workflow run completes."))return;
+ const base="https://api.github.com/repos/"+repo();
+ const payload={module_id:n.id,module_title:n.title,tasks:n.tasks,triggers:n.triggers,labels:n.labels,source:"restructure-ai-canvas"};
+ try{
+  const res=await fetch(base+"/dispatches",{method:"POST",headers:{...githubHeaders(),"Content-Type":"application/json"},body:JSON.stringify({event_type:"restructure_module_action",client_payload:payload})});
+  if(!res.ok){const body=await res.text();throw new Error(res.status+" "+body.slice(0,180))}
+  toast("Dispatch accepted. Tuff is monitoring all workflow runs in "+repo()+".");
+  startWorkflowMonitor();
+ }catch(e){toast("Dispatch failed: "+e.message)}
 }
 $("themeBtn").onclick=()=>{const dark=!document.documentElement.classList.contains("dark");document.documentElement.classList.toggle("dark",dark);localStorage.setItem(STORAGE.theme,dark?"dark":"light");$("themeBtn").innerHTML='<i data-lucide="'+(dark?"sun":"moon")+'" width="15"></i>';icons()};
 function icons(){if(window.lucide)window.lucide.createIcons()}
 function init(){const theme=localStorage.getItem(STORAGE.theme)||"light";document.documentElement.classList.toggle("dark",theme==="dark");$("themeBtn").innerHTML='<i data-lucide="'+(theme==="dark"?"sun":"moon")+'" width="15"></i>';icons();render();updateGithubStatus(!!repo()&&!!token());fillNodeSelects();window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeInspector();document.querySelectorAll(".modal.open").forEach(m=>closeModal(m.id))}});window.addEventListener("resize",()=>{});}
-init();
+init();startWorkflowMonitor();
 })();
 </script>
 </body></html>
