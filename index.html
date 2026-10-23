@@ -1,467 +1,152 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full w-full">
+<html lang="en" class="h-full">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>One-Person AI System Architecture Canvas</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: '#6366f1',
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    :root {
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --card-border: #e2e8f0;
-      --text-main: #0f172a;
-      --text-sub: #64748b;
-      --line-color: #94a3b8;
-    }
-    .dark {
-      --bg-color: #090d16;
-      --card-bg: #111827;
-      --card-border: #1f2937;
-      --text-main: #f8fafc;
-      --text-sub: #94a3b8;
-      --line-color: #334155;
-    }
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      overflow: hidden;
-      touch-action: none;
-    }
-    .grid-bg {
-      background-image: radial-gradient(var(--card-border) 1px, transparent 1px);
-      background-size: 24px 24px;
-    }
-    .flow-path {
-      fill: none;
-      stroke: var(--line-color);
-      stroke-width: 2px;
-      transition: stroke 0.3s ease;
-    }
-    .flow-path.active {
-      stroke: #6366f1;
-      stroke-dasharray: 6;
-      animation: dash 1.5s linear infinite;
-    }
-    @keyframes dash {
-      to { stroke-dashoffset: -24; }
-    }
-    .node-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      transition: box-shadow 0.2s ease, border-color 0.2s ease;
-      position: absolute;
-      user-select: none;
-    }
-    .node-card:hover {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-      border-color: #6366f1;
-    }
-    .dark .node-card {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8fafc"><title>ReStructure AI — One-Person Team</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{--bg:#f8fafc;--panel:#fff;--ink:#111827;--muted:#64748b;--line:#dbe3ee;--grid:rgba(100,116,139,.14);--accent:#6558e8;--shadow:0 14px 38px rgba(15,23,42,.08)}
+html.dark{--bg:#090d16;--panel:#111827;--ink:#f1f5f9;--muted:#94a3b8;--line:#293449;--grid:rgba(148,163,184,.10);--shadow:0 18px 48px rgba(0,0,0,.24);color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden;transition:background .2s,color .2s}
+button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.topbar{height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 22px;border-bottom:1px solid var(--line);background:var(--panel);position:relative;z-index:10}
+.brand{display:flex;align-items:center;gap:10px;font-weight:750;letter-spacing:-.03em}.brand-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#8175ff,#4f46e5);display:grid;place-items:center;color:white}.brand small{display:block;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.13em;text-transform:uppercase}
+.actions{display:flex;gap:8px;align-items:center}.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:9px 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:650;font-size:12px;white-space:nowrap}.btn:hover{border-color:var(--accent)}.btn.primary{background:var(--accent);border-color:var(--accent);color:white}.btn.ghost{border-color:transparent;background:transparent}.btn:disabled{opacity:.5;cursor:not-allowed}
+.layout{height:calc(100dvh - 66px);position:relative}.canvas-wrap{position:absolute;inset:0;overflow:hidden;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;touch-action:none}
+#canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}#canvas.grabbing{cursor:grabbing}.edges path{fill:none;stroke:#9aa8be;stroke-width:1.8;opacity:.85}.edges path.active{stroke:var(--accent);stroke-width:2.5}.edges path.flow{stroke-dasharray:6 8;animation:flow 1.5s linear infinite}.edges marker path{fill:#9aa8be}.edges path.active+marker path{fill:var(--accent)}@keyframes flow{to{stroke-dashoffset:-28}}
+.node{cursor:pointer;filter:drop-shadow(0 5px 10px rgba(15,23,42,.06))}.node rect.card{fill:var(--panel);stroke:var(--line);stroke-width:1.1;rx:14}.node.selected rect.card{stroke:var(--accent);stroke-width:2}.node .node-title{fill:var(--ink);font-size:13px;font-weight:750}.node .node-sub{fill:var(--muted);font-size:10px}.node .item{fill:var(--muted);font-size:10.5px}.node .eyebrow{fill:var(--muted);font-size:9px;font-weight:800;letter-spacing:1.1px}.node .item-dot{fill:#16a34a}.node .icon-box{fill:rgba(101,88,232,.12)}.node .icon-text{fill:var(--accent);font-size:14px;font-weight:800}.node.knowledge rect.card{fill:#171b2a;stroke:#30364b}.node.knowledge .node-title,.node.knowledge .item{fill:#f8fafc}.node.knowledge .node-sub,.node.knowledge .eyebrow{fill:#aab4ca}.node.knowledge .icon-box{fill:#33305a}.node.knowledge .icon-text{fill:#c4bfff}
+.canvas-heading{position:absolute;top:22px;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;max-width:80%;width:620px}.canvas-heading .kicker{color:var(--accent);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:800}.canvas-heading h1{font-size:clamp(20px,2.6vw,30px);letter-spacing:-.045em;font-weight:800;margin:5px 0 4px}.canvas-heading p{font-size:12px;color:var(--muted);margin:0}
+.zoom-controls{position:absolute;bottom:20px;left:20px;display:flex;gap:5px;padding:5px;border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:var(--shadow)}.zoom-controls button{height:34px;width:36px;border-radius:8px;background:transparent;border:0;color:var(--ink);display:grid;place-items:center}.zoom-controls button:hover{background:var(--bg)}#zoomValue{width:48px;display:grid;place-items:center;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.canvas-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:30px;padding:8px 12px;white-space:nowrap}
+.status-pill{border:1px solid var(--line);padding:5px 8px;border-radius:30px;font-size:10px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}.status-pill i{width:6px;height:6px;border-radius:50%;background:#22c55e}
+.scrim{position:fixed;inset:0;background:rgba(2,6,23,.42);z-index:30;opacity:0;pointer-events:none;transition:opacity .22s}.scrim.open{opacity:1;pointer-events:auto}.drawer{position:fixed;z-index:31;right:0;top:0;bottom:0;width:min(440px,100vw);background:var(--panel);border-left:1px solid var(--line);transform:translateX(102%);transition:transform .25s ease;display:flex;flex-direction:column;box-shadow:var(--shadow)}.drawer.open{transform:translateX(0)}.drawer-head{padding:22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.drawer-head h2{margin:4px 0 0;font-size:20px;letter-spacing:-.03em}.drawer-body{padding:20px 22px;overflow:auto;flex:1}.field{display:flex;flex-direction:column;gap:6px;margin-bottom:15px}.field label{font-size:11px;font-weight:750;color:var(--muted)}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 11px;background:var(--bg);color:var(--ink);min-width:0}.field textarea{min-height:90px;resize:vertical}.section-label{font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin:20px 0 10px}.subitem{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px}.subitem .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex:none}.issue{padding:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}.issue a{color:var(--accent);font-weight:700;text-decoration:none}.issue p{color:var(--muted);font-size:11px;margin:5px 0 0}.empty{border:1px dashed var(--line);padding:18px;border-radius:10px;text-align:center;color:var(--muted);font-size:12px}
+.modal{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,6,23,.5)}.modal.open{display:flex}.modal-card{width:min(540px,100%);max-height:min(88dvh,760px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px}.modal-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.modal-title h2{font-size:18px;font-weight:800;margin:0}.connection-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin:8px 0}.connection-row select{min-width:0;width:100%;padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font-size:11px}
+.toast{position:fixed;z-index:60;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.2s;background:#111827;color:#fff;padding:11px 15px;border-radius:12px;box-shadow:var(--shadow);font-size:12px;max-width:calc(100vw - 30px)}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){.topbar{height:58px;padding:0 12px}.brand{font-size:13px}.brand small{display:none}.brand-mark{width:30px;height:30px}.actions{gap:4px}.btn{padding:8px;font-size:11px}.btn .btn-text{display:none}.layout{height:calc(100dvh - 58px)}.canvas-heading{top:14px;width:90%}.canvas-heading p{font-size:10px}.canvas-hint{display:none}.zoom-controls{left:10px;bottom:12px}.drawer{top:auto;right:0;left:0;bottom:0;width:100%;height:min(82dvh,720px);border-radius:20px 20px 0 0;border-left:0;border-top:1px solid var(--line);transform:translateY(102%)}.drawer.open{transform:translateY(0)}.drawer-head{padding:18px 18px 14px}.drawer-body{padding:16px 18px}.modal{align-items:flex-end;padding:0}.modal-card{border-radius:18px 18px 0 0;max-height:90dvh;padding:20px;width:100%}.connection-row{grid-template-columns:1fr 1fr auto}.connection-row select{font-size:10px;padding:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
 </head>
-<body class="h-full w-full relative">
-
-  <!-- Top Header Bar -->
-  <header class="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-    <div class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
-        ✦
-      </div>
-      <div>
-        <h1 class="font-bold text-sm leading-tight text-gray-900 dark:text-white">The One-Person Team</h1>
-        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-mono" id="repo-status">Not connected to GitHub</p>
-      </div>
-    </div>
-
-    <div class="flex items-center gap-2">
-      <button onclick="openLinesModal()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-medium flex items-center gap-1 text-gray-700 dark:text-gray-300">
-        <i data-lucide="git-branch" class="w-4 h-4"></i>
-        <span class="hidden sm:inline">Lines</span>
-      </button>
-      <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs text-gray-700 dark:text-gray-300">
-        <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
-        <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
-      </button>
-      <button onclick="openGitHubModal()" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-medium text-xs flex items-center gap-1.5 hover:bg-indigo-700 transition">
-        <i data-lucide="github" class="w-4 h-4"></i>
-        <span>GitHub Sync</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Interactive Canvas Container -->
-  <div id="canvas-container" class="w-full h-full grid-bg relative overflow-hidden">
-    <svg id="connections-svg" class="w-full h-full absolute inset-0 pointer-events-none z-10">
-      <defs>
-        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" />
-        </marker>
-      </defs>
-    </svg>
-    <div id="nodes-layer" class="w-full h-full absolute inset-0 z-20"></div>
-  </div>
-
-  <!-- Bottom Touch Control Bar -->
-  <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md p-1.5 rounded-full border border-gray-200 dark:border-gray-800 shadow-xl">
-    <button onclick="zoomCanvas(1.15)" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"><i data-lucide="zoom-in" class="w-4 h-4"></i></button>
-    <button onclick="zoomCanvas(0.85)" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"><i data-lucide="zoom-out" class="w-4 h-4"></i></button>
-    <button onclick="resetView()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"><i data-lucide="maximize-2" class="w-4 h-4"></i></button>
-    <div class="w-px h-4 bg-gray-300 dark:bg-gray-700 mx-1"></div>
-    <button onclick="openAddNodeModal()" class="px-3 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-medium flex items-center gap-1 shadow-md hover:bg-indigo-700">
-      <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Block
-    </button>
-  </div>
-
-  <!-- Node Detail Drawer / Inspector -->
-  <div id="inspector-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex justify-end">
-    <div class="bg-white dark:bg-gray-900 w-full max-w-md h-full p-6 border-l border-gray-200 dark:border-gray-800 shadow-2xl overflow-y-auto flex flex-col justify-between">
-      <div>
-        <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
-          <div class="flex items-center gap-2">
-            <span id="inspector-icon" class="text-xl">⚙️</span>
-            <div>
-              <h3 id="inspector-title" class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Module Details</h3>
-              <p id="inspector-subtitle" class="text-xs text-gray-500">Node Configuration</p>
-            </div>
-          </div>
-          <button onclick="closeInspector()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"><i data-lucide="x" class="w-5 h-5"></i></button>
-        </div>
-
-        <div class="space-y-4 my-6">
-          <div>
-            <label class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Description</label>
-            <p id="inspector-desc" class="text-xs text-gray-600 dark:text-gray-300 mt-1">Select a node to inspect its pipeline capabilities.</p>
-          </div>
-
-          <div>
-            <label class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Sub-Items / Agents</label>
-            <div id="inspector-items" class="mt-2 space-y-1.5"></div>
-          </div>
-
-          <div>
-            <label class="text-[10px] font-bold uppercase tracking-wider text-gray-400">GitHub Issues Linked</label>
-            <div id="inspector-issues" class="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-xs space-y-2">
-              <p class="text-gray-500 italic">Connect to GitHub to load active issues.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-800">
-        <button onclick="triggerNodeAction()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 shadow-md">
-          <i data-lucide="play" class="w-3.5 h-3.5"></i> Run GitHub Workflow
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Connection Lines Manager Modal -->
-  <div id="lines-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-lg w-full p-6 border border-gray-200 dark:border-gray-800 shadow-2xl">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="git-branch" class="w-5 h-5"></i> Manage Connections</h3>
-        <button onclick="closeLinesModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      
-      <div class="space-y-3 mb-6">
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="text-xs font-semibold text-gray-500">From Node</label>
-            <select id="line-from" class="w-full mt-1 px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800"></select>
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-gray-500">To Node</label>
-            <select id="line-to" class="w-full mt-1 px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800"></select>
-          </div>
-        </div>
-        <button onclick="addConnection()" class="w-full py-2 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700">+ Add Link</button>
-      </div>
-
-      <div class="max-h-48 overflow-y-auto space-y-2 border-t border-gray-200 dark:border-gray-800 pt-4" id="connections-list"></div>
-    </div>
-  </div>
-
-  <!-- GitHub Settings Modal -->
-  <div id="github-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-800 shadow-2xl">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="github" class="w-5 h-5"></i> GitHub Integration</h3>
-        <button onclick="closeGitHubModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <p class="text-xs text-gray-500 mb-4">Connect your repository to sync issues and trigger workflows directly from this canvas.</p>
-      
-      <div class="space-y-3">
-        <div>
-          <label class="text-xs font-semibold uppercase text-gray-500">Repository Name</label>
-          <input id="gh-repo" type="text" placeholder="username/repository-name" class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800">
-        </div>
-        <div>
-          <label class="text-xs font-semibold uppercase text-gray-500">Personal Access Token (PAT)</label>
-          <input id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxx" class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800">
-        </div>
-      </div>
-
-      <div class="mt-6 flex justify-end gap-2">
-        <button onclick="closeGitHubModal()" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-400">Cancel</button>
-        <button onclick="saveGitHubConfig()" class="px-4 py-2 text-xs font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Save & Connect</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // System Architecture Nodes
-    let nodes = [
-      { id: 'inputs', title: 'Input Channels', x: 200, y: 40, theme: 'light', icon: '📥', items: ['Voice Notes', 'Links', 'Raw Ideas'] },
-      { id: 'brain', title: '01. The Brain', x: 480, y: 40, theme: 'light', icon: '🧠', items: ['Triage', 'Review Tasks', 'Solo Priorities', 'Check Work'] },
-      { id: 'knowledge', title: '02. Knowledge Layer', x: 50, y: 180, theme: 'dark', icon: '📁', items: ['Brand Voice', 'Style Guide', 'Templates'] },
-      { id: 'research', title: 'Research Studio', x: 300, y: 220, theme: 'light', icon: '🔍', items: ['Trend Scout', 'Competitor Watch', 'Hook Analyst'] },
-      { id: 'content', title: 'Content Studio', x: 550, y: 220, theme: 'light', icon: '✍️', items: ['Scriptwriter', 'Caption Writer', 'Clip Cutter'] },
-      { id: 'posting', title: 'Posting & Community', x: 800, y: 220, theme: 'light', icon: '🚀', items: ['Approval Queue', 'Scheduler', 'Cross-Poster'] },
-      { id: 'dailybrief', title: 'Daily Brief', x: 1050, y: 220, theme: 'light', icon: '📊', items: ['Analytics Tracker', 'Daily Metrics', 'Hook Scorer'] },
-      { id: 'handoff', title: 'Human Handoff', x: 680, y: 440, theme: 'dark', icon: '👤', items: ['You (Approve It)', 'You (Sales Calls)'] }
-    ];
-
-    let connections = [
-      { from: 'inputs', to: 'brain' },
-      { from: 'knowledge', to: 'brain' },
-      { from: 'brain', to: 'research' },
-      { from: 'brain', to: 'content' },
-      { from: 'brain', to: 'posting' },
-      { from: 'posting', to: 'handoff' },
-      { from: 'dailybrief', to: 'handoff' }
-    ];
-
-    let activeNode = null;
-    let scale = 0.85;
-    let pointX = 50;
-    let pointY = 20;
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-
-    const container = document.getElementById('canvas-container');
-    const nodesLayer = document.getElementById('nodes-layer');
-    const svg = document.getElementById('connections-svg');
-
-    function init() {
-      lucide.createIcons();
-      renderNodes();
-      renderConnections();
-      populateLineDropdowns();
-      
-      const savedRepo = localStorage.getItem('gh_repo');
-      if (savedRepo) {
-        document.getElementById('repo-status').innerText = `Connected to ${savedRepo}`;
-      }
-    }
-
-    function renderNodes() {
-      nodesLayer.innerHTML = '';
-      nodes.forEach(node => {
-        const card = document.createElement('div');
-        card.className = `node-card p-3.5 w-52 cursor-pointer ${node.theme === 'dark' ? 'bg-gray-900 text-white border-gray-800' : ''}`;
-        card.style.left = `${node.x}px`;
-        card.style.top = `${node.y}px`;
-        card.onclick = () => openInspector(node);
-
-        card.innerHTML = `
-          <div class="flex items-center gap-2 mb-2 pb-2 border-b ${node.theme === 'dark' ? 'border-gray-800' : 'border-gray-100'}">
-            <span class="text-base">${node.icon}</span>
-            <h4 class="font-bold text-xs leading-tight">${node.title}</h4>
-          </div>
-          <div class="space-y-1">
-            ${node.items.map(item => `
-              <div class="text-[11px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium flex items-center justify-between">
-                <span>${item}</span>
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              </div>
-            `).join('')}
-          </div>
-        `;
-        nodesLayer.appendChild(card);
-      });
-    }
-
-    function renderConnections() {
-      svg.innerHTML = `
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" />
-          </marker>
-        </defs>
-      `;
-
-      connections.forEach(conn => {
-        const fromNode = nodes.find(n => n.id === conn.from);
-        const toNode = nodes.find(n => n.id === conn.to);
-        if (!fromNode || !toNode) return;
-
-        const x1 = fromNode.x + 104;
-        const y1 = fromNode.y + 60;
-        const x2 = toNode.x + 104;
-        const y2 = toNode.y + 20;
-
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        const dx = (x2 - x1) / 2;
-        const d = `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`;
-
-        path.setAttribute('d', d);
-        path.setAttribute('class', 'flow-path active');
-        path.setAttribute('marker-end', 'url(#arrow)');
-        svg.appendChild(path);
-      });
-    }
-
-    function openInspector(node) {
-      activeNode = node;
-      document.getElementById('inspector-title').innerText = node.title;
-      document.getElementById('inspector-icon').innerText = node.icon;
-      document.getElementById('inspector-desc').innerText = `Configured workflow and agent controls for ${node.title}.`;
-      
-      const itemsContainer = document.getElementById('inspector-items');
-      itemsContainer.innerHTML = node.items.map(i => `
-        <div class="px-2.5 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-medium flex items-center justify-between">
-          <span>${i}</span>
-          <span class="text-[10px] text-indigo-500 font-mono">Ready</span>
-        </div>
-      `).join('');
-
-      document.getElementById('inspector-modal').classList.remove('hidden');
-    }
-
-    function closeInspector() {
-      document.getElementById('inspector-modal').classList.add('hidden');
-    }
-
-    function openLinesModal() {
-      document.getElementById('lines-modal').classList.remove('hidden');
-      renderConnectionsList();
-    }
-
-    function closeLinesModal() {
-      document.getElementById('lines-modal').classList.add('hidden');
-    }
-
-    function populateLineDropdowns() {
-      const fromSelect = document.getElementById('line-from');
-      const toSelect = document.getElementById('line-to');
-      const options = nodes.map(n => `<option value="${n.id}">${n.title}</option>`).join('');
-      fromSelect.innerHTML = options;
-      toSelect.innerHTML = options;
-    }
-
-    function addConnection() {
-      const from = document.getElementById('line-from').value;
-      const to = document.getElementById('line-to').value;
-      if (from !== to && !connections.some(c => c.from === from && c.to === to)) {
-        connections.push({ from, to });
-        renderConnections();
-        renderConnectionsList();
-      }
-    }
-
-    function removeConnection(index) {
-      connections.splice(index, 1);
-      renderConnections();
-      renderConnectionsList();
-    }
-
-    function renderConnectionsList() {
-      const list = document.getElementById('connections-list');
-      list.innerHTML = connections.map((c, i) => `
-        <div class="flex items-center justify-between p-2 rounded bg-gray-100 dark:bg-gray-800 text-xs">
-          <span>${nodes.find(n=>n.id===c.from)?.title} ➔ ${nodes.find(n=>n.id===c.to)?.title}</span>
-          <button onclick="removeConnection(${i})" class="text-red-500 font-bold hover:underline">Delete</button>
-        </div>
-      `).join('');
-    }
-
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
-    }
-
-    function openGitHubModal() {
-      document.getElementById('github-modal').classList.remove('hidden');
-      document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
-      document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
-    }
-
-    function closeGitHubModal() {
-      document.getElementById('github-modal').classList.add('hidden');
-    }
-
-    function saveGitHubConfig() {
-      const repo = document.getElementById('gh-repo').value.trim();
-      const token = document.getElementById('gh-token').value.trim();
-      
-      if (repo) localStorage.setItem('gh_repo', repo);
-      if (token) localStorage.setItem('gh_token', token);
-
-      document.getElementById('repo-status').innerText = repo ? `Connected to ${repo}` : 'Not connected to GitHub';
-      closeGitHubModal();
-    }
-
-    function zoomCanvas(factor) {
-      scale *= factor;
-      updateTransform();
-    }
-
-    function resetView() {
-      scale = 0.85;
-      pointX = 50;
-      pointY = 20;
-      updateTransform();
-    }
-
-    function updateTransform() {
-      nodesLayer.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-      svg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-    }
-
-    function triggerNodeAction() {
-      alert(`Triggered action for ${activeNode?.title}! Check GitHub Actions for details.`);
-      closeInspector();
-    }
-
-    // Touch & Canvas Dragging
-    container.addEventListener('mousedown', (e) => {
-      if (e.target === container || e.target.id === 'nodes-layer' || e.target.tagName === 'svg') {
-        isDragging = true;
-        startX = e.clientX - pointX;
-        startY = e.clientY - pointY;
-      }
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      pointX = e.clientX - startX;
-      pointY = e.clientY - startY;
-      updateTransform();
-    });
-
-    window.addEventListener('mouseup', () => { isDragging = false; });
-
-    init();
-  </script>
-</body>
-</html>
+<body>
+<header class="topbar">
+ <div class="brand"><div class="brand-mark"><i data-lucide="workflow" width="18"></i></div><div>ReStructure AI<small>ONE-PERSON TEAM CANVAS</small></div></div>
+ <div class="actions">
+  <span class="status-pill" id="connectionStatus"><i></i><span>Local canvas</span></span>
+  <button class="btn" id="connectionsBtn"><i data-lucide="git-merge" width="15"></i><span class="btn-text">Connections</span></button>
+  <button class="btn" id="githubBtn"><i data-lucide="github" width="15"></i><span class="btn-text">GitHub</span></button>
+  <button class="btn" id="themeBtn" aria-label="Toggle theme"><i data-lucide="moon" width="15"></i></button>
+ </div>
+</header>
+<main class="layout">
+ <div class="canvas-wrap" id="canvasWrap">
+  <svg id="canvas" role="application" aria-label="Interactive system architecture canvas">
+   <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#9aa8be"></path></marker></defs>
+   <g id="viewport"><g class="edges" id="edges"></g><g id="nodes"></g></g>
+  </svg>
+ </div>
+ <div class="canvas-heading"><div class="kicker">Your modular operating system</div><h1>The One-Person Social Media Team</h1><p>One brain. Shared context. Specialized studios. Human approval where it matters.</p></div>
+ <div class="zoom-controls"><button id="zoomOut" aria-label="Zoom out"><i data-lucide="minus" width="16"></i></button><span id="zoomValue">100%</span><button id="zoomIn" aria-label="Zoom in"><i data-lucide="plus" width="16"></i></button><button id="zoomReset" aria-label="Reset view"><i data-lucide="maximize-2" width="15"></i></button></div>
+ <div class="canvas-hint">Drag empty space to pan · Drag a card to move · Select a card to inspect</div>
+</main>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="inspector" aria-label="Node inspector">
+ <div class="drawer-head"><div><div class="kicker" id="inspectCategory" style="font-size:10px;letter-spacing:.15em;color:var(--accent);font-weight:800">MODULE INSPECTOR</div><h2 id="inspectTitle">Select a module</h2><p id="inspectRole" style="font-size:12px;color:var(--muted);margin:6px 0 0"></p></div><button class="btn ghost" id="closeInspector" aria-label="Close inspector"><i data-lucide="x" width="18"></i></button></div>
+ <div class="drawer-body" id="inspectBody"></div>
+</aside>
+<div class="modal" id="connectionsModal" role="dialog" aria-modal="true" aria-labelledby="connectionsTitle"><div class="modal-card">
+ <div class="modal-title"><h2 id="connectionsTitle">Connection manager</h2><button class="btn ghost" data-close-modal="connectionsModal" aria-label="Close"><i data-lucide="x" width="17"></i></button></div>
+ <p style="color:var(--muted);font-size:12px;margin-top:-8px">Create, edit, and remove SVG flow lines between modules.</p>
+ <div class="field"><label for="fromNode">From node</label><select id="fromNode"></select></div><div class="field"><label for="toNode">To node</label><select id="toNode"></select></div>
+ <div class="field"><label for="lineStyle">Line style</label><select id="lineStyle"><option value="flow">Animated flow</option><option value="solid">Solid</option></select></div>
+ <button class="btn primary" id="addConnection" style="width:100%"><i data-lucide="plus" width="15"></i>Add connection</button>
+ <div class="section-label">Existing connections</div><div id="connectionList"></div>
+ </div></div>
+<div class="modal" id="githubModal" role="dialog" aria-modal="true" aria-labelledby="githubTitle"><div class="modal-card">
+ <div class="modal-title"><h2 id="githubTitle">GitHub connection</h2><button class="btn ghost" data-close-modal="githubModal" aria-label="Close"><i data-lucide="x" width="17"></i></button></div>
+ <p style="font-size:12px;color:var(--muted);margin-top:-8px">Connect a repository to load issues and dispatch workflows. Settings are stored in this browser only.</p>
+ <div class="field"><label for="repoInput">Repository name (owner/repo)</label><input id="repoInput" placeholder="octocat/my-project" autocomplete="off"></div>
+ <div class="field"><label for="tokenInput">Fine-grained personal access token</label><input id="tokenInput" type="password" placeholder="github_pat_…" autocomplete="off"><small style="color:var(--muted);font-size:10px">Token is stored in localStorage on this device. Use a private trusted device and minimum repository permissions. Never share this page with a token saved.</small></div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="saveGithub">Save & test connection</button><button class="btn" id="clearGithub">Disconnect</button></div>
+ <div id="githubMessage" style="font-size:12px;color:var(--muted);margin-top:12px"></div>
+ </div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+"use strict";
+const STORAGE={nodes:"restructure.nodes.v1",edges:"restructure.edges.v1",theme:"restructure.theme.v1",repo:"restructure.github.repo.v1",token:"restructure.github.token.v1"};
+const defaults=[
+{id:"inputs",title:"Input Channels",category:"00 · INTAKE",role:"Capture ideas, requests, and external signals before routing them into the system.",icon:"inbox",x:390,y:110,w:240,h:150,items:["Voice notes","Webhooks & forms","Ideas and inbound messages"],tasks:["Capture input","Normalize request"],triggers:["intake_received"],labels:["intake"]},
+{id:"brain",title:"The Brain",category:"01 · ORCHESTRATION",role:"Triage work, set priorities, route tasks, and check quality before any handoff.",icon:"brain",x:390,y:320,w:240,h:178,items:["Task triage","Priority router","Quality gate","Daily priorities"],tasks:["triage_task","review_draft","prioritize_work"],triggers:["task_received","review_requested"],labels:["brain"]},
+{id:"knowledge",title:"Knowledge & Context",category:"02 · SHARED MEMORY",role:"The source of truth for brand context, reusable assets, and operating rules.",icon:"library",x:90,y:330,w:240,h:180,items:["Brand voice & guidelines","Templates & offers","Audience personas","Asset library & memory"],tasks:["load_brand_context","update_knowledge"],triggers:["knowledge_updated"],labels:["knowledge"]},
+{id:"research",title:"Research Studio",category:"03 · EXECUTION",role:"Find trends, audience questions, keywords, and competitor signals that inform content.",icon:"search",x:60,y:590,w:245,h:182,items:["Trend scout","Competitor watch","Hook & keyword analyst","Idea bank"],tasks:["research_trends","analyze_competitors"],triggers:["research_requested"],labels:["research"]},
+{id:"content",title:"Content Studio",category:"03 · EXECUTION",role:"Turn research and brand context into platform-ready drafts and creative assets.",icon:"clapperboard",x:345,y:590,w:245,h:182,items:["Hooks & scripts","Captions & carousels","Thumbnails & clips","Brand consistency check"],tasks:["generate_content","repurpose_content"],triggers:["content_requested","draft_requested"],labels:["content"]},
+{id:"distribution",title:"Distribution & Community",category:"03 · EXECUTION",role:"Coordinate approved publishing, community replies, lead tagging, and collaborations.",icon:"send",x:630,y:590,w:245,h:182,items:["Approval queue & scheduler","Cross-posting","Comment & DM triage","Email and collab manager"],tasks:["schedule_post","triage_comments"],triggers:["publish_approved"],labels:["distribution"]},
+{id:"growth",title:"Growth Analytics",category:"03 · EXECUTION",role:"Measure performance, compare hooks, track links, and summarize useful signals.",icon:"chart-no-axes-combined",x:915,y:590,w:245,h:182,items:["Views & retention","Clicks, leads & revenue","Hook scoring & A/B tests","Daily brief"],tasks:["collect_metrics","build_daily_brief"],triggers:["metrics_updated"],labels:["growth","analytics"]},
+{id:"human",title:"Human Handoff",category:"04 · APPROVALS",role:"Keep high-impact decisions under human control, including content approval and sales conversations.",icon:"user-check",x:390,y:865,w:240,h:160,items:["Approve content","High-value leads","Sales calls & exceptions"],tasks:["request_approval","record_decision"],triggers:["approval_needed","high_value_lead","budget_limit"],labels:["approval","human"]},
+{id:"data",title:"Data & Observability",category:"05 · MEASUREMENT",role:"Record results and agent activity so the system is auditable and can improve.",icon:"activity",x:390,y:1110,w:240,h:150,items:["Performance metrics","Agent activity log","Workflow outcomes"],tasks:["log_agent_activity","store_metrics"],triggers:["workflow_completed"],labels:["metrics","logs"]}
+];
+const defaultEdges=[{id:"e1",from:"inputs",to:"brain",style:"flow"},{id:"e2",from:"brain",to:"knowledge",style:"solid"},{id:"e3",from:"brain",to:"research",style:"flow"},{id:"e4",from:"brain",to:"content",style:"flow"},{id:"e5",from:"brain",to:"distribution",style:"flow"},{id:"e6",from:"brain",to:"growth",style:"flow"},{id:"e7",from:"knowledge",to:"content",style:"solid"},{id:"e8",from:"research",to:"content",style:"flow"},{id:"e9",from:"content",to:"human",style:"flow"},{id:"e10",from:"human",to:"distribution",style:"flow"},{id:"e11",from:"distribution",to:"growth",style:"solid"},{id:"e12",from:"growth",to:"brain",style:"flow"},{id:"e13",from:"distribution",to:"data",style:"solid"},{id:"e14",from:"growth",to:"data",style:"solid"}];
+const clone=x=>JSON.parse(JSON.stringify(x));
+function loadJSON(key,fallback){try{const x=JSON.parse(localStorage.getItem(key));return Array.isArray(x)&&x.length?x:clone(fallback)}catch(e){return clone(fallback)}}
+let nodes=loadJSON(STORAGE.nodes,defaults),edges=loadJSON(STORAGE.edges,defaultEdges),selected=null,scale=.76,tx=20,ty=10,drag=null,pan=null,pointerStart=null;
+const svg=d3.select("#canvas"),viewport=d3.select("#viewport"),edgeLayer=d3.select("#edges"),nodeLayer=d3.select("#nodes");
+const $=id=>document.getElementById(id);const nodeById=id=>nodes.find(n=>n.id===id);
+function persist(){localStorage.setItem(STORAGE.nodes,JSON.stringify(nodes));localStorage.setItem(STORAGE.edges,JSON.stringify(edges))}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove("show"),2600)}
+function iconSVG(name,x,y){const glyph={inbox:"↓",brain:"✳",library:"▤",search:"⌕",clapperboard:"▣",send:"➤","chart-no-axes-combined":"↗","user-check":"✓",activity:"⌁"}[name]||"◇";return '<rect class="icon-box" x="'+x+'" y="'+y+'" width="28" height="28" rx="8"></rect><text class="icon-text" x="'+(x+14)+'" y="'+(y+19)+'" text-anchor="middle">'+glyph+'</text>'}
+function bezier(a,b){const ax=a.x+a.w/2,ay=a.y+a.h,bx=b.x+b.w/2,by=b.y;let sx=ax,sy=ay,ex=bx,ey=by;if(by<ay){sy=a.y;ey=b.y+b.h}const mid=(sy+ey)/2;return "M"+sx+","+sy+" C"+sx+","+mid+" "+ex+","+mid+" "+ex+","+ey}
+function render(){
+const map=new Map(nodes.map(n=>[n.id,n]));
+edgeLayer.selectAll("path.edge").data(edges.filter(e=>map.has(e.from)&&map.has(e.to)),d=>d.id).join("path").attr("class",d=>"edge "+(d.style==="flow"?"flow":"")).attr("d",d=>bezier(map.get(d.from),map.get(d.to))).attr("marker-end","url(#arrow)").on("click",function(event,d){event.stopPropagation();if(confirm("Delete this connection?")){edges=edges.filter(e=>e.id!==d.id);persist();render();updateConnectionList()}});
+const gs=nodeLayer.selectAll("g.node").data(nodes,d=>d.id).join(enter=>{const g=enter.append("g").attr("class","node");g.append("rect").attr("class","card");g.append("g").attr("class","icon");g.append("text").attr("class","eyebrow");g.append("text").attr("class","node-title");g.append("text").attr("class","node-sub");g.append("g").attr("class","items");return g},update=>update,exit=>exit.remove());
+gs.attr("transform",d=>"translate("+d.x+","+d.y+")").attr("class",d=>"node"+(d.id==="knowledge"?" knowledge":"")+(selected===d.id?" selected":"")).on("click",function(event,d){if(drag&&drag.moved)return;event.stopPropagation();openInspector(d.id)}).on("pointerdown",function(event,d){if(event.button!==0)return;event.stopPropagation();const p=localPoint(event);drag={id:d.id,startX:p.x,startY:p.y,x:d.x,y:d.y,moved:false};this.setPointerCapture&&this.setPointerCapture(event.pointerId)}).on("pointermove",function(event,d){if(!drag||drag.id!==d.id)return;const p=localPoint(event);if(Math.abs(p.x-drag.startX)+Math.abs(p.y-drag.startY)>3)drag.moved=true;if(drag.moved){d.x=Math.round(drag.x+p.x-drag.startX);d.y=Math.round(drag.y+p.y-drag.startY);d3.select(this).attr("transform","translate("+d.x+","+d.y+")");updateEdgesOnly()}}).on("pointerup",function(event,d){if(drag&&drag.id===d.id){const moved=drag.moved;drag=null;if(moved){persist();render();}}}).on("pointercancel",()=>{drag=null});
+gs.select("rect.card").attr("width",d=>d.w).attr("height",d=>d.h);
+gs.select("g.icon").html(d=>iconSVG(d.icon,14,13));
+gs.select("text.eyebrow").attr("x",52).attr("y",23).text(d=>d.category);
+gs.select("text.node-title").attr("x",14).attr("y",62).text(d=>d.title);
+gs.select("text.node-sub").attr("x",14).attr("y",80).text(d=>d.items.length+" components · "+d.tasks.length+" tasks");
+gs.select("g.items").each(function(d){const g=d3.select(this);g.selectAll("text").data(d.items.slice(0,4)).join("text").attr("class","item").attr("x",14).attr("y",(item,i)=>103+i*17).text(item=>item.length>31?item.slice(0,29)+"…":item);g.selectAll("circle").data(d.items.slice(0,4)).join("circle").attr("class","item-dot").attr("cx",d=>14).attr("cy",(item,i)=>99+i*17).attr("r",2.5)});
+applyTransform();updateZoom();
+}
+function updateEdgesOnly(){const map=new Map(nodes.map(n=>[n.id,n]));edgeLayer.selectAll("path.edge").attr("d",d=>map.has(d.from)&&map.has(d.to)?bezier(map.get(d.from),map.get(d.to)):"")}
+function applyTransform(){viewport.attr("transform","translate("+tx+","+ty+") scale("+scale+")")}
+function updateZoom(){$("zoomValue").textContent=Math.round(scale*100)+"%"}
+function localPoint(event){const r=$("canvas").getBoundingClientRect();return{x:(event.clientX-r.left-tx)/scale,y:(event.clientY-r.top-ty)/scale}}
+function zoomAt(next,cx,cy){next=Math.max(.35,Math.min(1.7,next));const r=$("canvas").getBoundingClientRect();const px=(cx??r.width/2),py=(cy??r.height/2);const wx=(px-tx)/scale,wy=(py-ty)/scale;scale=next;tx=px-wx*scale;ty=py-wy*scale;applyTransform();updateZoom()}
+svg.on("pointerdown",function(event){if(event.target.closest&&event.target.closest(".node"))return;if(event.button!==0&&event.pointerType!=="touch")return;pan={x:event.clientX,y:event.clientY,tx,ty};$("canvas").classList.add("grabbing");this.node().setPointerCapture&&this.node().setPointerCapture(event.pointerId)}).on("pointermove",function(event){if(!pan)return;tx=pan.tx+event.clientX-pan.x;ty=pan.ty+event.clientY-pan.y;applyTransform()}).on("pointerup pointercancel",function(){pan=null;$("canvas").classList.remove("grabbing")}).on("wheel",function(event){event.preventDefault();const r=$("canvas").getBoundingClientRect();zoomAt(scale*(event.deltaY<0?1.08:.92),event.clientX-r.left,event.clientY-r.top)});
+$("zoomIn").onclick=()=>zoomAt(scale*1.15);$("zoomOut").onclick=()=>zoomAt(scale/1.15);$("zoomReset").onclick=()=>{scale=.76;tx=20;ty=10;applyTransform();updateZoom()};
+function showModal(id){$(id).classList.add("open")}function closeModal(id){$(id).classList.remove("open")}
+document.querySelectorAll("[data-close-modal]").forEach(b=>b.onclick=()=>closeModal(b.dataset.closeModal));
+$("connectionsBtn").onclick=()=>{fillNodeSelects();updateConnectionList();showModal("connectionsModal")};
+function fillNodeSelects(){["fromNode","toNode"].forEach(id=>{const s=$(id),old=s.value;s.innerHTML="";nodes.forEach(n=>{const o=document.createElement("option");o.value=n.id;o.textContent=n.title;s.appendChild(o)});if(nodes.some(n=>n.id===old))s.value=old});if($("fromNode").value===$("toNode").value&&nodes.length>1)$("toNode").selectedIndex=1}
+function updateConnectionList(){const root=$("connectionList");root.innerHTML="";if(!edges.length){root.innerHTML='<div class="empty">No connections yet.</div>';return}edges.forEach(e=>{const a=nodeById(e.from),b=nodeById(e.to);if(!a||!b)return;const row=document.createElement("div");row.className="connection-row";row.innerHTML='<span style="font-size:11px;overflow:hidden;text-overflow:ellipsis">'+escapeHTML(a.title)+'</span><span style="font-size:11px;overflow:hidden;text-overflow:ellipsis;color:var(--muted)">→ '+escapeHTML(b.title)+'</span><button class="btn" aria-label="Delete connection"><i data-lucide="trash-2" width="13"></i></button>';row.querySelector("button").onclick=()=>{edges=edges.filter(x=>x.id!==e.id);persist();render();updateConnectionList()};root.appendChild(row)});icons()}
+$("addConnection").onclick=()=>{const from=$("fromNode").value,to=$("toNode").value;if(!from||!to||from===to)return toast("Choose two different nodes.");if(edges.some(e=>e.from===from&&e.to===to))return toast("That connection already exists.");edges.push({id:"e"+Date.now(),from,to,style:$("lineStyle").value});persist();render();updateConnectionList();toast("Connection added.")};
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function openInspector(id){selected=id;const n=nodeById(id);if(!n)return;render();$("inspectCategory").textContent=n.category;$("inspectTitle").textContent=n.title;$("inspectRole").textContent=n.role;const body=$("inspectBody");body.innerHTML="";
+const actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px";actions.innerHTML='<button class="btn primary" id="runWorkflow"><i data-lucide="play" width="14"></i>Run workflow</button><button class="btn" id="fetchIssues"><i data-lucide="circle-dot" width="14"></i>Fetch issues</button>';body.appendChild(actions);
+const desc=document.createElement("div");desc.className="field";desc.innerHTML='<label for="editRole">Module role</label><textarea id="editRole">'+escapeHTML(n.role)+'</textarea>';body.appendChild(desc);
+const itemsTitle=document.createElement("div");itemsTitle.className="section-label";itemsTitle.textContent="Components";body.appendChild(itemsTitle);
+const items=document.createElement("div");items.id="editableItems";n.items.forEach((item,i)=>{const row=document.createElement("div");row.style.cssText="display:flex;gap:6px;margin-bottom:7px";row.innerHTML='<input aria-label="Component '+(i+1)+'" value="'+escapeHTML(item)+'" style="flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);padding:9px;font-size:12px"><button class="btn" aria-label="Remove component"><i data-lucide="x" width="13"></i></button>';row.querySelector("button").onclick=()=>{n.items.splice(i,1);persist();openInspector(id)};row.querySelector("input").onchange=e=>{n.items[i]=e.target.value;persist();render()};items.appendChild(row)});body.appendChild(items);
+const addItem=document.createElement("button");addItem.className="btn";addItem.style.marginTop="7px";addItem.innerHTML='<i data-lucide="plus" width="14"></i>Add component';addItem.onclick=()=>{n.items.push("New component");persist();openInspector(id)};body.appendChild(addItem);
+const taskTitle=document.createElement("div");taskTitle.className="section-label";taskTitle.textContent="Linked tasks";body.appendChild(taskTitle);const taskList=document.createElement("div");taskList.className="empty";taskList.textContent=n.tasks.length?n.tasks.join(" · "):"No tasks configured";body.appendChild(taskList);
+const triggerTitle=document.createElement("div");triggerTitle.className="section-label";triggerTitle.textContent="GitHub Action triggers";body.appendChild(triggerTitle);const triggerList=document.createElement("div");triggerList.className="empty";triggerList.textContent=n.triggers.length?n.triggers.join(" · "):"No triggers configured";body.appendChild(triggerList);
+const issueTitle=document.createElement("div");issueTitle.className="section-label";issueTitle.textContent="Open GitHub issues";body.appendChild(issueTitle);const issueList=document.createElement("div");issueList.id="issueList";issueList.innerHTML='<div class="empty">Press “Fetch issues” to load issues matching this module’s labels.</div>';body.appendChild(issueList);
+$("runWorkflow").onclick=()=>dispatchWorkflow(n);$("fetchIssues").onclick=()=>fetchIssues(n);$("closeInspector").onclick=closeInspector;icons();$("scrim").classList.add("open");$("inspector").classList.add("open")}
+function closeInspector(){selected=null;$("inspector").classList.remove("open");$("scrim").classList.remove("open");render()}
+$("closeInspector").onclick=closeInspector;$("scrim").onclick=closeInspector;
+function repo(){return(localStorage.getItem(STORAGE.repo)||"").trim()}function token(){return localStorage.getItem(STORAGE.token)||""}
+function githubHeaders(){const h={"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};if(token())h.Authorization="Bearer "+token();return h}
+$("githubBtn").onclick=()=>{const r=repo().split("/");$("repoInput").value=r.length===2?repo():"";$("tokenInput").value=token();$("githubMessage").textContent="";showModal("githubModal")};
+$("saveGithub").onclick=async()=>{const r=$("repoInput").value.trim(),t=$("tokenInput").value.trim();if(!/^[^/ ]+\\/[^/ ]+$/.test(r))return $("githubMessage").textContent="Enter a valid owner/repo name.";if(!t)return $("githubMessage").textContent="Enter a token with repository access.";localStorage.setItem(STORAGE.repo,r);localStorage.setItem(STORAGE.token,t);$("githubMessage").textContent="Testing repository access…";try{const res=await fetch("https://api.github.com/repos/"+r,{headers:githubHeaders()});if(!res.ok)throw new Error(res.status+" "+res.statusText);const data=await res.json();$("githubMessage").textContent="Connected to "+data.full_name+".";updateGithubStatus(true);toast("GitHub connected.");}catch(e){$("githubMessage").textContent="Connection failed: "+e.message;updateGithubStatus(false)}};
+$("clearGithub").onclick=()=>{localStorage.removeItem(STORAGE.repo);localStorage.removeItem(STORAGE.token);$("repoInput").value="";$("tokenInput").value="";$("githubMessage").textContent="Disconnected. Stored credentials removed from this browser.";updateGithubStatus(false)};
+function updateGithubStatus(ok){const el=$("connectionStatus");el.innerHTML='<i style="background:'+(ok?"#22c55e":"#94a3b8")+'"></i><span>'+(ok?"GitHub connected":"Local canvas")+'</span>'}
+async function fetchIssues(n){const root=$("issueList");root.innerHTML='<div class="empty">Loading issues…</div>';if(!repo())return root.innerHTML='<div class="empty">Connect GitHub first using the GitHub button.</div>';try{const labels=(n.labels||[]).join(",");const url="https://api.github.com/repos/"+repo()+"/issues?state=open&per_page=30"+(labels?"&labels="+encodeURIComponent(labels):"");const res=await fetch(url,{headers:githubHeaders()});if(!res.ok)throw new Error(res.status+" "+res.statusText);const list=(await res.json()).filter(x=>!x.pull_request);root.innerHTML="";if(!list.length){root.innerHTML='<div class="empty">No open issues found for this module’s labels.</div>';return}list.forEach(issue=>{const el=document.createElement("div");el.className="issue";el.innerHTML='<a target="_blank" rel="noopener noreferrer" href="'+escapeHTML(issue.html_url)+'">#'+issue.number+" "+escapeHTML(issue.title)+'</a><p>'+escapeHTML(issue.state)+' · '+escapeHTML(issue.labels.map(l=>l.name).join(", ")||"unlabeled")+'</p>';root.appendChild(el)})}catch(e){root.innerHTML='<div class="empty">Could not load issues: '+escapeHTML(e.message)+'. Check repository, token permissions, and rate limits.</div>'}}
+async function dispatchWorkflow(n){if(!repo()||!token()){toast("Connect GitHub with a repository token first.");showModal("githubModal");return}if(!confirm("Dispatch workflow for “"+n.title+"”? The repository must have a workflow listening for repository_dispatch."))return;try{const res=await fetch("https://api.github.com/repos/"+repo()+"/dispatches",{method:"POST",headers:{...githubHeaders(),"Content-Type":"application/json"},body:JSON.stringify({event_type:"restructure_module_action",client_payload:{module_id:n.id,module_title:n.title,tasks:n.tasks,triggers:n.triggers,labels:n.labels,source:"restructure-ai-canvas"}})});if(!res.ok){const body=await res.text();throw new Error(res.status+" "+body.slice(0,180))}toast("Workflow dispatch accepted by GitHub.");}catch(e){toast("Dispatch failed: "+e.message)}}
+$("themeBtn").onclick=()=>{const dark=!document.documentElement.classList.contains("dark");document.documentElement.classList.toggle("dark",dark);localStorage.setItem(STORAGE.theme,dark?"dark":"light");$("themeBtn").innerHTML='<i data-lucide="'+(dark?"sun":"moon")+'" width="15"></i>';icons()};
+function icons(){if(window.lucide)window.lucide.createIcons()}
+function init(){const theme=localStorage.getItem(STORAGE.theme)||"light";document.documentElement.classList.toggle("dark",theme==="dark");$("themeBtn").innerHTML='<i data-lucide="'+(theme==="dark"?"sun":"moon")+'" width="15"></i>';icons();render();updateGithubStatus(!!repo()&&!!token());fillNodeSelects();window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeInspector();document.querySelectorAll(".modal.open").forEach(m=>closeModal(m.id))}});window.addEventListener("resize",()=>{});}
+init();
+})();
+</script>
+</body></html>
