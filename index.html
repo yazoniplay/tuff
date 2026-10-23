@@ -37,6 +37,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-vis
   <button class="btn primary" id="addNodeBtn"><i data-lucide="plus" width="15"></i><span class="btn-text">Add block</span></button>
   <button class="btn" id="aiSettingsBtn"><i data-lucide="sparkles" width="15"></i><span class="btn-text">AI briefs</span></button>
   <button class="btn" id="connectionsBtn"><i data-lucide="git-merge" width="15"></i><span class="btn-text">Connections</span></button>
+  <button class="btn" id="registryBtn"><i data-lucide="boxes" width="15"></i><span class="btn-text">Tools & AI</span></button>
   <button class="btn" id="githubBtn"><i data-lucide="github" width="15"></i><span class="btn-text">GitHub</span></button>
   <button class="btn" id="themeBtn" aria-label="Toggle theme"><i data-lucide="moon" width="15"></i></button>
  </div>
@@ -78,6 +79,14 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-vis
  <div class="field"><label for="tokenInput">Fine-grained personal access token</label><input id="tokenInput" type="password" placeholder="github_pat_…" autocomplete="off"><small style="color:var(--muted);font-size:10px">Token is stored in localStorage on this device. Use a private trusted device and minimum repository permissions. Never share this page with a token saved.</small></div>
  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="saveGithub">Save & test connection</button><button class="btn" id="clearGithub">Disconnect</button></div>
  <div id="githubMessage" style="font-size:12px;color:var(--muted);margin-top:12px"></div>
+ </div></div>
+<div class="modal" id="registryModal" role="dialog" aria-modal="true" aria-labelledby="registryTitle"><div class="modal-card" style="width:min(760px,100%)">
+ <div class="modal-title"><div><h2 id="registryTitle">Tools & AI Registry</h2><p style="font-size:12px;color:var(--muted);margin:5px 0 0">Map the tools, secret references, and AI models powering each module.</p></div><button class="btn ghost" data-close-modal="registryModal" aria-label="Close"><i data-lucide="x" width="17"></i></button></div>
+ <div id="registryTabs" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px">
+  <button class="btn primary" data-registry-tab="tools">Tools</button><button class="btn" data-registry-tab="keys">API keys</button><button class="btn" data-registry-tab="models">AI models</button><button class="btn" data-registry-tab="map">Assignments</button>
+ </div>
+ <div id="registryContent"></div>
+ <p style="font-size:11px;color:var(--muted);margin:16px 0 0">Security: this registry stores metadata only. Never paste secret API key values here. Put real secrets in server-side environment variables or your hosting provider's secret manager.</p>
  </div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
@@ -310,6 +319,41 @@ async function dispatchWorkflow(n){
  }catch(e){toast("Dispatch failed: "+e.message)}
 }
 $("themeBtn").onclick=()=>{const dark=!document.documentElement.classList.contains("dark");document.documentElement.classList.toggle("dark",dark);localStorage.setItem(STORAGE.theme,dark?"dark":"light");$("themeBtn").innerHTML='<i data-lucide="'+(dark?"sun":"moon")+'" width="15"></i>';icons()};
+const REGISTRY_KEY="restructure.tools-ai-registry.v1";
+ let registryTab="tools";
+ function loadRegistry(){try{const x=JSON.parse(localStorage.getItem(REGISTRY_KEY)||"{}");return{tools:Array.isArray(x.tools)?x.tools:[],keys:Array.isArray(x.keys)?x.keys:[],models:Array.isArray(x.models)?x.models:[]}}catch(e){return{tools:[],keys:[],models:[]}}}
+ let registry=loadRegistry();
+ function saveRegistry(){localStorage.setItem(REGISTRY_KEY,JSON.stringify(registry))}
+ function moduleOptions(selectedId){return '<option value="">Not assigned</option>'+nodes.map(n=>'<option value="'+escapeHTML(n.id)+'" '+(n.id===selectedId?'selected':'')+'>'+escapeHTML(n.title)+'</option>').join("")}
+ function openRegistry(tab){registryTab=tab||"tools";renderRegistry();showModal("registryModal")}
+ function renderRegistry(){
+  document.querySelectorAll("[data-registry-tab]").forEach(b=>{b.classList.toggle("primary",b.dataset.registryTab===registryTab)});
+  const root=$("registryContent");
+  const configs={
+   tools:{hint:"Track software, services, SDKs, and integrations.",fields:[["name","Tool name","e.g. Supabase"],["category","Category","Database, hosting, analytics…"],["url","Website / docs URL","https://…"],["notes","What it does","Purpose, setup notes, limits…"]],list:registry.tools},
+   keys:{hint:"Track variable names and where they belong — never store the secret value here.",fields:[["name","Provider / key label","e.g. Gemini API"],["env","Environment variable name","e.g. GEMINI_API_KEY"],["status","Status","Needed, Configured, or Rotate"],["notes","Used for","Which app, service, or workflow needs it"]],list:registry.keys},
+   models:{hint:"Record which model is used, what it does, and which module owns it.",fields:[["name","Agent / model name","e.g. Content researcher"],["provider","Provider","Gemini"],["model","Exact model ID","gemini-3.5-flash-lite"],["role","Responsibility","Research, writing, review…"],["tools","Connected tool names","GitHub, Supabase, Render"]],list:registry.models}
+  };
+  if(registryTab==="map"){renderAssignments(root);return}
+  const cfg=configs[registryTab];
+  let html='<div style="font-size:12px;color:var(--muted);margin:-5px 0 14px">'+cfg.hint+'</div><form id="registryForm"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0 12px">';
+  cfg.fields.forEach(([name,label,placeholder])=>{html+='<div class="field"><label for="reg-'+name+'">'+label+'</label>'+((name==="notes"||name==="role")?'<textarea id="reg-'+name+'" name="'+name+'" placeholder="'+placeholder.replace(/"/g,"&quot;")+'"></textarea>':'<input id="reg-'+name+'" name="'+name+'" '+(name==="url"?'type="url"':'type="text"')+' placeholder="'+placeholder.replace(/"/g,"&quot;")+'" '+(name==="name"?'required':'')+'></div>')});
+  html+='<div class="field"><label for="reg-module">Assigned module</label><select id="reg-module" name="moduleId">'+moduleOptions("")+'</select></div>';
+  html+='</div><button class="btn primary" type="submit"><i data-lucide="plus" width="14"></i>Save '+(registryTab==="tools"?"tool":registryTab==="keys"?"key reference":"AI model")+'</button></form><div class="section-label">Saved '+(registryTab==="tools"?"tools":registryTab==="keys"?"API key references":"AI models")+'</div>';
+  if(!cfg.list.length)html+='<div class="empty">Nothing registered yet. Add the first entry above.</div>';
+  cfg.list.slice().reverse().forEach(item=>{const mod=nodeById(item.moduleId);const detail=registryTab==="tools"?[item.category,item.url,item.notes,mod?"Module: "+mod.title:""].filter(Boolean).join(" · "):registryTab==="keys"?[item.env,item.status,item.notes,mod?"Module: "+mod.title:""].filter(Boolean).join(" · "):[item.provider,item.model,item.role,item.tools,mod?"Module: "+mod.title:""].filter(Boolean).join(" · ");html+='<div class="issue"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div style="min-width:0"><strong>'+escapeHTML(item.name)+'</strong><p>'+escapeHTML(detail||"No extra details")+'</p></div><button class="btn" data-reg-delete="'+escapeHTML(item.id)+'" aria-label="Delete entry"><i data-lucide="trash-2" width="13"></i></button></div></div>'});
+  root.innerHTML=html;
+  $("registryForm").onsubmit=e=>{e.preventDefault();const data=Object.fromEntries(new FormData(e.currentTarget).entries());if(registryTab==="keys"&&!data.env.trim())return toast("Add the environment variable name, not the secret value.");registry[registryTab].push({...data,id:"reg-"+Date.now()});saveRegistry();renderRegistry();toast("Registry entry saved.")};
+  root.querySelectorAll("[data-reg-delete]").forEach(b=>b.onclick=()=>{registry[registryTab]=registry[registryTab].filter(x=>x.id!==b.dataset.regDelete);saveRegistry();renderRegistry();toast("Entry removed.")});
+  icons();
+ }
+ function renderAssignments(root){
+  let html='<p style="font-size:12px;color:var(--muted);margin:-5px 0 14px">Review which Tuff module owns each registered tool, key reference, and AI model. Change assignments in each entry tab.</p>';
+  [["Tools",registry.tools],["API key references",registry.keys],["AI models",registry.models]].forEach(([label,list])=>{html+='<div class="section-label">'+label+'</div>';if(!list.length){html+='<div class="empty">No entries yet.</div>';return}list.forEach(item=>{const mod=nodeById(item.moduleId);html+='<div class="subitem"><span class="dot" style="background:'+(mod?'#22c55e':'#94a3b8')+'"></span><span style="flex:1;min-width:0"><strong>'+escapeHTML(item.name)+'</strong><div style="color:var(--muted);font-size:11px">'+escapeHTML(mod?mod.title:"Not assigned to a module")+'</div></span></div>'})});
+  root.innerHTML=html;icons()
+ }
+ document.querySelectorAll("[data-registry-tab]").forEach(b=>b.onclick=()=>{registryTab=b.dataset.registryTab;renderRegistry()});
+ $("registryBtn").onclick=()=>openRegistry("tools");
 function icons(){if(window.lucide)window.lucide.createIcons()}
 function init(){const theme=localStorage.getItem(STORAGE.theme)||"light";document.documentElement.classList.toggle("dark",theme==="dark");$("themeBtn").innerHTML='<i data-lucide="'+(theme==="dark"?"sun":"moon")+'" width="15"></i>';icons();render();updateGithubStatus(!!repo()&&!!token());fillNodeSelects();window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeInspector();document.querySelectorAll(".modal.open").forEach(m=>closeModal(m.id))}});window.addEventListener("resize",()=>{});}
 init();startWorkflowMonitor();startCommitMonitor();pollHostedCommitFeed();
