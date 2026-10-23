@@ -77,6 +77,66 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-vis
 @media(prefers-reduced-motion:reduce){.canvas-wrap,.topbar:after,.brand-mark,.canvas-heading,.canvas-heading .kicker,.canvas-heading h1,.canvas-heading p,.status-pill i,.canvas-hint,.node.selected rect.card,.modal.open .modal-card{animation:none!important}.btn,.node,.node rect.card,.drawer,.issue,.field input,.field textarea,.field select{transition:none!important}}
 
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Mobile-first finishing pass */
+html,body{min-height:100%;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+button,.btn,.zoom-controls button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.topbar{padding-top:env(safe-area-inset-top);padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+.actions{min-width:0;flex:1;justify-content:flex-end}
+@media(max-width:700px){
+ .topbar{height:62px;gap:9px;padding-bottom:0;overflow:visible}
+ .brand{flex:0 0 auto;gap:7px;white-space:nowrap}
+ .brand-mark{width:29px;height:29px;border-radius:9px}
+ .actions{flex:1;min-width:0;max-width:calc(100vw - 155px);overflow-x:auto;overflow-y:hidden;justify-content:flex-start;gap:6px;padding:5px 1px;scrollbar-width:none;overscroll-behavior-x:contain}
+ .actions::-webkit-scrollbar{display:none}
+ .actions>*{flex:0 0 auto}
+ .status-pill{display:none}
+ .btn{min-width:36px;min-height:36px;padding:8px;border-radius:10px}
+ .btn .btn-text{display:none}
+ .layout{height:calc(100dvh - 62px);height:calc(100svh - 62px);height:calc(100dvh - 62px - env(safe-area-inset-bottom,0px))}
+ .canvas-heading{top:13px;width:min(90%,520px);max-width:90%;padding:0 8px}
+ .canvas-heading .kicker{font-size:9px;letter-spacing:.15em}
+ .canvas-heading h1{font-size:clamp(17px,5vw,24px);line-height:1.12;margin:5px 0}
+ .canvas-heading p{font-size:10px;line-height:1.35;max-width:340px;margin-inline:auto}
+ .zoom-controls{left:12px;bottom:max(12px,env(safe-area-inset-bottom));padding:4px;gap:2px;border-radius:13px}
+ .zoom-controls button{width:40px;height:40px;min-width:40px}
+ #zoomValue{width:43px}
+ .drawer{height:min(84dvh,760px);height:min(84dvh,760px);padding-bottom:env(safe-area-inset-bottom);overscroll-behavior:contain}
+ .drawer-head{padding:16px 16px 12px}
+ .drawer-head h2{font-size:18px;overflow-wrap:anywhere}
+ .drawer-body{padding:14px 16px 22px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ .field input,.field textarea,.field select{font-size:16px;min-height:42px}
+ .field textarea{min-height:100px}
+ .modal{padding-bottom:env(safe-area-inset-bottom);align-items:flex-end}
+ .modal-card{max-height:calc(90dvh - env(safe-area-inset-top));padding:18px 16px calc(20px + env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ .connection-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 38px;gap:6px}
+ .connection-row select{min-height:40px;font-size:12px}
+ .toast{bottom:max(16px,calc(env(safe-area-inset-bottom) + 12px));max-width:calc(100vw - 24px);text-align:center}
+}
+@media(max-width:420px){
+ .topbar{gap:6px;padding-left:8px;padding-right:8px}
+ .brand{font-size:12px;gap:6px}
+ .brand-mark{width:27px;height:27px}
+ .actions{max-width:calc(100vw - 137px);gap:5px}
+ .btn{min-width:35px;min-height:35px;padding:7px}
+ .canvas-heading{top:10px}
+ .canvas-heading h1{font-size:17px}
+ .canvas-heading p{max-width:280px}
+ .zoom-controls{left:8px;bottom:8px}
+ .zoom-controls button{width:36px;height:38px;min-width:36px}
+ #zoomValue{width:38px;font-size:10px}
+}
+@media(max-width:350px){
+ .brand>div:last-child{max-width:83px;overflow:hidden;text-overflow:ellipsis}
+ .actions{max-width:calc(100vw - 118px)}
+ .canvas-heading p{display:none}
+}
+@media(hover:none){
+ .btn:hover:not(:disabled),.issue:hover,.brand:hover .brand-mark{transform:none;box-shadow:none}
+ .node:hover rect.card{stroke:var(--line);stroke-width:1.1}
+ .node.selected:hover rect.card{stroke:var(--accent);stroke-width:2}
+}
+
 </style>
 </head>
 <body>
