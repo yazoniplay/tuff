@@ -1,53 +1,442 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="h-full w-full">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101014">
-  <meta name="description" content="Tuff — your open-source AI social media team. Research, create, review, and grow.">
-  <title>Tuff — AI Social Media Team</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>One-Person AI System Architecture Canvas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: '#6366f1',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --line-color: #94a3b8;
+    }
+    .dark {
+      --bg-color: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --line-color: #334155;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      touch-action: none;
+    }
+    .grid-bg {
+      background-image: radial-gradient(var(--card-border) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .flow-path {
+      fill: none;
+      stroke: var(--line-color);
+      stroke-width: 2px;
+      transition: stroke 0.3s ease;
+    }
+    .flow-path.active {
+      stroke: #6366f1;
+      stroke-dasharray: 6;
+      animation: dash 1.5s linear infinite;
+    }
+    @keyframes dash {
+      to { stroke-dashoffset: -24; }
+    }
+    .node-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      position: absolute;
+      user-select: none;
+    }
+    .node-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      border-color: #6366f1;
+    }
+    .dark .node-card {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
 </head>
-<body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <a class="brand" href="./"><span class="brand-mark">t</span><span>tuff<span class="brand-dot">.</span><small>AI SOCIAL TEAM</small></span></a>
-      <div class="workspace"><span class="workspace-icon">✳</span><span><b>Workspace</b><small>Personal brand</small></span><span class="chevron">⌄</span></div>
-      <p class="nav-label">WORKSPACE</p>
-      <nav class="nav">
-        <a class="nav-item active" href="#overview" data-view="overview"><span>◫</span> Overview</a>
-        <a class="nav-item" href="#research" data-view="research"><span>⌕</span> Research <i id="research-count">—</i></a>
-        <a class="nav-item" href="#studio" data-view="studio"><span>✎</span> Content studio</a>
-        <a class="nav-item" href="#approvals" data-view="approvals"><span>✓</span> Approvals <i id="approval-count">—</i></a>
-        <a class="nav-item" href="#analytics" data-view="analytics"><span>▥</span> Analytics</a>
-      </nav>
-      <p class="nav-label">CONFIGURATION</p>
-      <nav class="nav">
-        <a class="nav-item" href="#knowledge" data-view="knowledge"><span>▤</span> Brand knowledge</a>
-        <a class="nav-item" href="#settings" data-view="settings"><span>⚙</span> Settings</a>
-      </nav>
-      <div class="sidebar-bottom"><span class="status-dot"></span><span><b>Engine status</b><small>GitHub Actions</small></span><a href="https://github.com/yazoniplay/tuff/actions" target="_blank" rel="noreferrer" aria-label="Open GitHub Actions">↗</a></div>
-    </aside>
-    <main class="main">
-      <header class="topbar"><div class="mobile-brand">tuff<span>.</span></div><div class="breadcrumbs">Workspace <span>/</span> <b id="crumb">Overview</b></div><div class="top-actions"><span class="live-indicator"><i></i> GitHub connected</span><a class="avatar" href="https://github.com/yazoniplay/tuff" target="_blank" rel="noreferrer">T</a></div></header>
-      <section class="page">
-        <div class="welcome-row"><div><p class="eyebrow">YOUR AI-POWERED CREW</p><h1 id="page-title">Good work starts here.</h1><p class="subheading" id="page-subtitle">Your social media operation, in one place.</p></div><a class="button primary" href="#studio" data-view="studio"><span>＋</span> Create content</a></div>
-        <div class="notice" id="connection-notice"><span class="notice-icon">↗</span><div><b>Connected to GitHub</b><p>Dashboard data loads from public repository Issues. AI keys stay in GitHub Actions secrets — never in this browser.</p></div><button id="dismiss-notice" aria-label="Dismiss notice">×</button></div>
-        <div id="view-content">
-          <div class="section-heading"><div><h2>Workspace overview</h2><p>Latest activity across your content pipeline.</p></div><button class="button secondary" id="refresh-btn">↻ Refresh data</button></div>
-          <div class="stats-grid">
-            <article class="stat-card"><div class="stat-top"><span>Research items</span><span class="stat-icon violet">⌕</span></div><div class="stat-value" id="stat-research">—</div><div class="stat-foot">From repository reports</div></article>
-            <article class="stat-card"><div class="stat-top"><span>Drafts in queue</span><span class="stat-icon blue">✎</span></div><div class="stat-value" id="stat-drafts">—</div><div class="stat-foot">Content awaiting review</div></article>
-            <article class="stat-card"><div class="stat-top"><span>Approved</span><span class="stat-icon green">✓</span></div><div class="stat-value" id="stat-approved">—</div><div class="stat-foot">Approved draft issues</div></article>
-            <article class="stat-card"><div class="stat-top"><span>Open tasks</span><span class="stat-icon orange">◷</span></div><div class="stat-value" id="stat-tasks">—</div><div class="stat-foot">Open repository issues</div></article>
-          </div>
-          <div class="content-grid"><section class="panel"><div class="panel-heading"><div><h3>Recent activity</h3><p>Latest issues from your repository</p></div><a href="https://github.com/yazoniplay/tuff/issues" target="_blank" rel="noreferrer" class="text-link">View all ↗</a></div><div id="recent-issues" class="issue-list"><div class="loading"><span class="spinner"></span> Loading repository activity…</div></div></section>
-          <section class="panel quick-panel"><div class="panel-heading"><div><h3>Quick actions</h3><p>Keep the workflow moving</p></div></div><a class="quick-action" href="#studio" data-view="studio"><span class="quick-icon violet">✦</span><span><b>Draft new content</b><small>Build a post with Gemini</small></span><span class="arrow">→</span></a><a class="quick-action" href="https://github.com/yazoniplay/tuff/actions/workflows/daily-research.yml" target="_blank" rel="noreferrer"><span class="quick-icon blue">⌕</span><span><b>Run research</b><small>Start the GitHub workflow</small></span><span class="arrow">↗</span></a><a class="quick-action" href="#approvals" data-view="approvals"><span class="quick-icon green">✓</span><span><b>Review drafts</b><small>Approve work in GitHub Issues</small></span><span class="arrow">→</span></a><a class="quick-action" href="#knowledge" data-view="knowledge"><span class="quick-icon orange">▤</span><span><b>Update brand voice</b><small>Keep AI on-brand</small></span><span class="arrow">→</span></a><div class="tip"><span>✳</span><p><b>Human-in-the-loop by design.</b><br>Nothing should publish until a reviewer approves it.</p></div></section></div>
-        </div>
-        <footer><span>tuff<span class="brand-dot">.</span> <span>Open source social media automation</span></span><div><a href="https://github.com/yazoniplay/tuff" target="_blank" rel="noreferrer">GitHub repository ↗</a><span>Built with Gemini + GitHub Actions</span></div></footer>
-      </section>
-    </main>
+<body class="h-full w-full relative">
+
+  <!-- Top Header Bar -->
+  <header class="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-3 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+        ✦
+      </div>
+      <div>
+        <h1 class="font-bold text-sm leading-tight text-gray-900 dark:text-white">The One-Person Team</h1>
+        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-mono" id="repo-status">Not connected to GitHub</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button onclick="openLinesModal()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-medium flex items-center gap-1 text-gray-700 dark:text-gray-300">
+        <i data-lucide="git-branch" class="w-4 h-4"></i>
+        <span class="hidden sm:inline">Lines</span>
+      </button>
+      <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs text-gray-700 dark:text-gray-300">
+        <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+        <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+      </button>
+      <button onclick="openGitHubModal()" class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-medium text-xs flex items-center gap-1.5 hover:bg-indigo-700 transition">
+        <i data-lucide="github" class="w-4 h-4"></i>
+        <span>GitHub Sync</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Interactive Canvas Container -->
+  <div id="canvas-container" class="w-full h-full grid-bg relative overflow-hidden">
+    <svg id="connections-svg" class="w-full h-full absolute inset-0 pointer-events-none z-10">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" />
+        </marker>
+      </defs>
+    </svg>
+    <div id="nodes-layer" class="w-full h-full absolute inset-0 z-20"></div>
   </div>
-  <script src="app.js" defer></script>
-</body>
-</html>
+
+  <!-- Bottom Touch Control Bar -->
+  <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md p-1.5 rounded-full border border-gray-200 dark:border-gray-800 shadow-xl">
+    <button onclick="zoomCanvas(1.15)" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"><i data-lucide="zoom-in" class="w-4 h-4"></i></button>
+    <button onclick="zoomCanvas(0.85)" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"><i data-lucide="zoom-out" class="w-4 h-4"></i></button>
+    <button onclick="resetView()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"><i data-lucide="maximize-2" class="w-4 h-4"></i></button>
+    <div class="w-px h-4 bg-gray-300 dark:bg-gray-700 mx-1"></div>
+    <button onclick="openAddNodeModal()" class="px-3 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-medium flex items-center gap-1 shadow-md hover:bg-indigo-700">
+      <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Block
+    </button>
+  </div>
+
+  <!-- Node Detail Drawer / Inspector -->
+  <div id="inspector-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex justify-end">
+    <div class="bg-white dark:bg-gray-900 w-full max-w-md h-full p-6 border-l border-gray-200 dark:border-gray-800 shadow-2xl overflow-y-auto flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
+          <div class="flex items-center gap-2">
+            <span id="inspector-icon" class="text-xl">⚙️</span>
+            <div>
+              <h3 id="inspector-title" class="font-bold text-lg leading-tight text-gray-900 dark:text-white">Module Details</h3>
+              <p id="inspector-subtitle" class="text-xs text-gray-500">Node Configuration</p>
+            </div>
+          </div>
+          <button onclick="closeInspector()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+
+        <div class="space-y-4 my-6">
+          <div>
+            <label class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Description</label>
+            <p id="inspector-desc" class="text-xs text-gray-600 dark:text-gray-300 mt-1">Select a node to inspect its pipeline capabilities.</p>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Sub-Items / Agents</label>
+            <div id="inspector-items" class="mt-2 space-y-1.5"></div>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold uppercase tracking-wider text-gray-400">GitHub Issues Linked</label>
+            <div id="inspector-issues" class="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-xs space-y-2">
+              <p class="text-gray-500 italic">Connect to GitHub to load active issues.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-800">
+        <button onclick="triggerNodeAction()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-2 shadow-md">
+          <i data-lucide="play" class="w-3.5 h-3.5"></i> Run GitHub Workflow
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connection Lines Manager Modal -->
+  <div id="lines-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-lg w-full p-6 border border-gray-200 dark:border-gray-800 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="git-branch" class="w-5 h-5"></i> Manage Connections</h3>
+        <button onclick="closeLinesModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      
+      <div class="space-y-3 mb-6">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-xs font-semibold text-gray-500">From Node</label>
+            <select id="line-from" class="w-full mt-1 px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800"></select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500">To Node</label>
+            <select id="line-to" class="w-full mt-1 px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800"></select>
+          </div>
+        </div>
+        <button onclick="addConnection()" class="w-full py-2 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700">+ Add Link</button>
+      </div>
+
+      <div class="max-h-48 overflow-y-auto space-y-2 border-t border-gray-200 dark:border-gray-800 pt-4" id="connections-list"></div>
+    </div>
+  </div>
+
+  <!-- GitHub Settings Modal -->
+  <div id="github-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-800 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg flex items-center gap-2"><i data-lucide="github" class="w-5 h-5"></i> GitHub Integration</h3>
+        <button onclick="closeGitHubModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <p class="text-xs text-gray-500 mb-4">Connect your repository to sync issues and trigger workflows directly from this canvas.</p>
+      
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs font-semibold uppercase text-gray-500">Repository Name</label>
+          <input id="gh-repo" type="text" placeholder="username/repository-name" class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800">
+        </div>
+        <div>
+          <label class="text-xs font-semibold uppercase text-gray-500">Personal Access Token (PAT)</label>
+          <input id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxx" class="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800">
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-2">
+        <button onclick="closeGitHubModal()" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-400">Cancel</button>
+        <button onclick="saveGitHubConfig()" class="px-4 py-2 text-xs font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // System Architecture Nodes
+    let nodes = [
+      { id: 'inputs', title: 'Input Channels', x: 200, y: 40, theme: 'light', icon: '📥', items: ['Voice Notes', 'Links', 'Raw Ideas'] },
+      { id: 'brain', title: '01. The Brain', x: 480, y: 40, theme: 'light', icon: '🧠', items: ['Triage', 'Review Tasks', 'Solo Priorities', 'Check Work'] },
+      { id: 'knowledge', title: '02. Knowledge Layer', x: 50, y: 180, theme: 'dark', icon: '📁', items: ['Brand Voice', 'Style Guide', 'Templates'] },
+      { id: 'research', title: 'Research Studio', x: 300, y: 220, theme: 'light', icon: '🔍', items: ['Trend Scout', 'Competitor Watch', 'Hook Analyst'] },
+      { id: 'content', title: 'Content Studio', x: 550, y: 220, theme: 'light', icon: '✍️', items: ['Scriptwriter', 'Caption Writer', 'Clip Cutter'] },
+      { id: 'posting', title: 'Posting & Community', x: 800, y: 220, theme: 'light', icon: '🚀', items: ['Approval Queue', 'Scheduler', 'Cross-Poster'] },
+      { id: 'dailybrief', title: 'Daily Brief', x: 1050, y: 220, theme: 'light', icon: '📊', items: ['Analytics Tracker', 'Daily Metrics', 'Hook Scorer'] },
+      { id: 'handoff', title: 'Human Handoff', x: 680, y: 440, theme: 'dark', icon: '👤', items: ['You (Approve It)', 'You (Sales Calls)'] }
+    ];
+
+    let connections = [
+      { from: 'inputs', to: 'brain' },
+      { from: 'knowledge', to: 'brain' },
+      { from: 'brain', to: 'research' },
+      { from: 'brain', to: 'content' },
+      { from: 'brain', to: 'posting' },
+      { from: 'posting', to: 'handoff' },
+      { from: 'dailybrief', to: 'handoff' }
+    ];
+
+    let activeNode = null;
+    let scale = 0.85;
+    let pointX = 50;
+    let pointY = 20;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    const container = document.getElementById('canvas-container');
+    const nodesLayer = document.getElementById('nodes-layer');
+    const svg = document.getElementById('connections-svg');
+
+    function init() {
+      lucide.createIcons();
+      renderNodes();
+      renderConnections();
+      populateLineDropdowns();
+      
+      const savedRepo = localStorage.getItem('gh_repo');
+      if (savedRepo) {
+        document.getElementById('repo-status').innerText = `Connected to ${savedRepo}`;
+      }
+    }
+
+    function renderNodes() {
+      nodesLayer.innerHTML = '';
+      nodes.forEach(node => {
+        const card = document.createElement('div');
+        card.className = `node-card p-3.5 w-52 cursor-pointer ${node.theme === 'dark' ? 'bg-gray-900 text-white border-gray-800' : ''}`;
+        card.style.left = `${node.x}px`;
+        card.style.top = `${node.y}px`;
+        card.onclick = () => openInspector(node);
+
+        card.innerHTML = `
+          <div class="flex items-center gap-2 mb-2 pb-2 border-b ${node.theme === 'dark' ? 'border-gray-800' : 'border-gray-100'}">
+            <span class="text-base">${node.icon}</span>
+            <h4 class="font-bold text-xs leading-tight">${node.title}</h4>
+          </div>
+          <div class="space-y-1">
+            ${node.items.map(item => `
+              <div class="text-[11px] px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium flex items-center justify-between">
+                <span>${item}</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        nodesLayer.appendChild(card);
+      });
+    }
+
+    function renderConnections() {
+      svg.innerHTML = `
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" />
+          </marker>
+        </defs>
+      `;
+
+      connections.forEach(conn => {
+        const fromNode = nodes.find(n => n.id === conn.from);
+        const toNode = nodes.find(n => n.id === conn.to);
+        if (!fromNode || !toNode) return;
+
+        const x1 = fromNode.x + 104;
+        const y1 = fromNode.y + 60;
+        const x2 = toNode.x + 104;
+        const y2 = toNode.y + 20;
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const dx = (x2 - x1) / 2;
+        const d = `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`;
+
+        path.setAttribute('d', d);
+        path.setAttribute('class', 'flow-path active');
+        path.setAttribute('marker-end', 'url(#arrow)');
+        svg.appendChild(path);
+      });
+    }
+
+    function openInspector(node) {
+      activeNode = node;
+      document.getElementById('inspector-title').innerText = node.title;
+      document.getElementById('inspector-icon').innerText = node.icon;
+      document.getElementById('inspector-desc').innerText = `Configured workflow and agent controls for ${node.title}.`;
+      
+      const itemsContainer = document.getElementById('inspector-items');
+      itemsContainer.innerHTML = node.items.map(i => `
+        <div class="px-2.5 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-medium flex items-center justify-between">
+          <span>${i}</span>
+          <span class="text-[10px] text-indigo-500 font-mono">Ready</span>
+        </div>
+      `).join('');
+
+      document.getElementById('inspector-modal').classList.remove('hidden');
+    }
+
+    function closeInspector() {
+      document.getElementById('inspector-modal').classList.add('hidden');
+    }
+
+    function openLinesModal() {
+      document.getElementById('lines-modal').classList.remove('hidden');
+      renderConnectionsList();
+    }
+
+    function closeLinesModal() {
+      document.getElementById('lines-modal').classList.add('hidden');
+    }
+
+    function populateLineDropdowns() {
+      const fromSelect = document.getElementById('line-from');
+      const toSelect = document.getElementById('line-to');
+      const options = nodes.map(n => `<option value="${n.id}">${n.title}</option>`).join('');
+      fromSelect.innerHTML = options;
+      toSelect.innerHTML = options;
+    }
+
+    function addConnection() {
+      const from = document.getElementById('line-from').value;
+      const to = document.getElementById('line-to').value;
+      if (from !== to && !connections.some(c => c.from === from && c.to === to)) {
+        connections.push({ from, to });
+        renderConnections();
+        renderConnectionsList();
+      }
+    }
+
+    function removeConnection(index) {
+      connections.splice(index, 1);
+      renderConnections();
+      renderConnectionsList();
+    }
+
+    function renderConnectionsList() {
+      const list = document.getElementById('connections-list');
+      list.innerHTML = connections.map((c, i) => `
+        <div class="flex items-center justify-between p-2 rounded bg-gray-100 dark:bg-gray-800 text-xs">
+          <span>${nodes.find(n=>n.id===c.from)?.title} ➔ ${nodes.find(n=>n.id===c.to)?.title}</span>
+          <button onclick="removeConnection(${i})" class="text-red-500 font-bold hover:underline">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+    }
+
+    function openGitHubModal() {
+      document.getElementById('github-modal').classList.remove('hidden');
+      document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+      document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+    }
+
+    function closeGitHubModal() {
+      document.getElementById('github-modal').classList.add('hidden');
+    }
+
+    function saveGitHubConfig() {
+      const repo = document.getElementById('gh-repo').value.trim();
+      const token = document.getElementById('gh-token').value.trim();
+      
+      if (repo) localStorage.setItem('gh_repo', repo);
+      if (token) localStorage.setItem('gh_token', token);
+
+      document.getElementById('repo-status').innerText = repo ? `Connected to ${repo}` : 'Not connected to GitHub';
+      closeGitHubModal();
+    }
+
+    function zoomCanvas(factor) {
+      scale *= factor;
+      updateTransform();
+    }
+
+    function resetView() {
+      scale = 0.85;
+      pointX = 50;
+      pointY = 20;
+      updateTransform();
+    }
+
+    function updateTransform() {
+      nodesLayer.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+      svg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+    }
+
+    function triggerNodeAction() {
+      alert(`Triggered action for ${activeNode?.title}! Check GitHub Actions 
