@@ -162,8 +162,8 @@ if(n.commitUrl){const link=document.createElement("a");link.className="btn prima
  }
  if(n.workflowRunId&&n.workflowConclusion&&n.workflowConclusion!=="success"){
   const auto=document.createElement("section");auto.style.cssText="margin:0 0 18px;padding:12px;border:1px solid var(--line);border-radius:10px";
-  auto.innerHTML='<div class="section-label">Gemini Auto-Fix</div><p style="font-size:12px;color:var(--muted);margin:0 0 10px">Gemini will inspect runner logs and relevant repository files, create a fix on a separate branch, open a pull request, and watch its checks. It will never push directly to your default branch or merge automatically.</p><button class="btn primary" id="autoFixWorkflow"><i data-lucide="wrench" width="14"></i>Investigate & create fix PR</button><div id="autoFixOutput" style="font-size:12px;white-space:pre-wrap;margin-top:10px"></div>';
-  body.appendChild(auto);$("autoFixWorkflow").onclick=()=>autoFixWorkflowRun(n);
+  auto.innerHTML='<div class="section-label">Gemini Auto-Fix</div><p style="font-size:12px;color:var(--muted);margin:0 0 10px">Gemini investigates logs and code, creates a separate branch and pull request, then watches CI. It never pushes to the default branch or merges automatically.</p><button class="btn" id="toggleAutoFixMode" style="margin:0 0 8px"></button><button class="btn primary" id="autoFixWorkflow"><i data-lucide="wrench" width="14"></i>Investigate this failure now</button><div id="autoFixOutput" style="font-size:12px;white-space:pre-wrap;margin-top:10px"></div>';
+  body.appendChild(auto);const toggle=$("toggleAutoFixMode");const refreshToggle=()=>{toggle.textContent=localStorage.getItem("restructure.github.autofix.enabled.v1")==="true"?"✓ Auto-fix enabled for future failures":"Enable auto-fix for future failures";toggle.classList.toggle("primary",localStorage.getItem("restructure.github.autofix.enabled.v1")==="true")};refreshToggle();toggle.onclick=async()=>{const enabled=localStorage.getItem("restructure.github.autofix.enabled.v1")==="true";if(!enabled&&"Notification" in window&&Notification.permission==="default"){try{await Notification.requestPermission()}catch(e){}}localStorage.setItem("restructure.github.autofix.enabled.v1",String(!enabled));refreshToggle();toast(!enabled?"Automatic Gemini fixes enabled for future failed runs.":"Automatic Gemini fixes disabled.");};$("autoFixWorkflow").onclick=()=>autoFixWorkflowRun(n);
  }
  if(n.workflowConclusion&&n.workflowConclusion!=="success"){
   const failure=document.createElement("section");failure.style.cssText="margin:0 0 18px;padding:12px;border:1px solid var(--line);border-radius:10px";
@@ -204,7 +204,17 @@ function createWorkflowRunBlock(run,sourceId){
  if(source&&!edges.some(e=>e.from===source.id&&e.to===id))edges.push({id:"e-workflow-"+run.id,from:source.id,to:id,style:"flow"});
  saveSeenRun(run.id);persist();render();fillNodeSelects();updateConnectionList();
  toast("Workflow run added: "+title+" ("+conclusion+").");
+ queueAutoFixIfEnabled(block);
  return true;
+}
+function queueAutoFixIfEnabled(n){
+ if(!n||n.workflowConclusion==="success"||localStorage.getItem("restructure.github.autofix.enabled.v1")!=="true")return;
+ const key="restructure.github.autofix.started.v1:"+repo().toLowerCase();let seen=[];
+ try{seen=JSON.parse(localStorage.getItem(key)||"[]")}catch(e){}
+ if(seen.includes(String(n.workflowRunId)))return;
+ seen.push(String(n.workflowRunId));localStorage.setItem(key,JSON.stringify(seen.slice(-100)));
+ toast("Gemini Auto-Fix started for "+n.workflowName+".");
+ autoFixWorkflowRun(n);
 }
 let workflowPollTimer=null,workflowPollBusy=false,workflowPollRepo="";
 async function pollWorkflowRuns(initial){
@@ -440,7 +450,7 @@ function redactLogText(s){
  return String(s||"").replace(/gh[pousr]_[A-Za-z0-9_]{20,}/g,"[REDACTED_TOKEN]").replace(/AIza[0-9A-Za-z_-]{25,}/g,"[REDACTED_API_KEY]").replace(/(authorization:\s*bearer\s+)[^\s]+/ig,"$1[REDACTED]").replace(/(password|api[_-]?key|secret|token)\s*[:=]\s*[^\s,;]+/ig,"$1=[REDACTED]").slice(-24000);
 }
 async function autoFixWorkflowRun(n){
- const out=$("autoFixOutput");if(!out)return;
+ const out=$("autoFixOutput")||document.createElement("div");if(!out.isConnected){out.style.display="none";document.body.appendChild(out)}
  const key=localStorage.getItem(STORAGE.aiKey);if(!key){out.textContent="Add a Gemini API key in AI briefs settings first.";return}
  if(!repo()||!token()){out.textContent="Connect GitHub first.";return}
  if(!window.JSZip){out.textContent="Log ZIP reader failed to load. Refresh and retry.";return}
