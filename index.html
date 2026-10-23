@@ -191,7 +191,7 @@ async function pollWorkflowRuns(initial){
   let seen;
   try{seen=JSON.parse(localStorage.getItem(key)||"null")}catch(e){seen=null}
   if(!Array.isArray(seen)){
-   localStorage.setItem(key,JSON.stringify(runs.map(r=>String(r.id)).slice(-500)));
+   localStorage.setItem(key,JSON.stringify(runs.filter(r=>r.status==="completed").map(r=>String(r.id)).slice(-500)));
    workflowPollRepo=currentRepo;
    if(!initial)toast("Workflow monitoring enabled for "+currentRepo+". New runs will appear here.");
    return;
@@ -203,8 +203,6 @@ async function pollWorkflowRuns(initial){
    createWorkflowRunBlock(run,null);
    seenSet.add(String(run.id));
   }
-  // Mark newly observed in-progress runs too, but allow their completion to be detected on a later poll.
-  for(const run of runs){if(run.status!=="completed"&&!seenSet.has(String(run.id)))seenSet.add(String(run.id))}
   localStorage.setItem(key,JSON.stringify(Array.from(seenSet).slice(-500)));
   workflowPollRepo=currentRepo;
  }catch(e){
