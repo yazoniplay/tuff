@@ -6,6 +6,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 :root{--bg:#f8fafc;--panel:#fff;--ink:#111827;--muted:#64748b;--line:#dbe3ee;--grid:rgba(100,116,139,.14);--accent:#6558e8;--shadow:0 14px 38px rgba(15,23,42,.08)}
 html.dark{--bg:#090d16;--panel:#111827;--ink:#f1f5f9;--muted:#94a3b8;--line:#293449;--grid:rgba(148,163,184,.10);--shadow:0 18px 48px rgba(0,0,0,.24);color-scheme:dark}
@@ -158,6 +159,11 @@ if(n.commitUrl){const link=document.createElement("a");link.className="btn prima
   pipeline.innerHTML='<div class="section-label">Pipeline inspector</div><p style="font-size:12px;color:var(--muted);margin:0 0 10px">Live GitHub Actions run details, every job and step, plus tool/model references from your Tools & AI registry.</p><button class="btn primary" id="loadPipelineInspector"><i data-lucide="workflow" width="14"></i>Load step-by-step pipeline</button><div id="pipelineInspector" style="margin-top:12px"><div class="empty">Load a run to inspect its real jobs and steps.</div></div>';
   body.appendChild(pipeline);
   $("loadPipelineInspector").onclick=()=>loadPipelineInspector(n);
+ }
+ if(n.workflowRunId&&n.workflowConclusion&&n.workflowConclusion!=="success"){
+  const auto=document.createElement("section");auto.style.cssText="margin:0 0 18px;padding:12px;border:1px solid var(--line);border-radius:10px";
+  auto.innerHTML='<div class="section-label">Gemini Auto-Fix</div><p style="font-size:12px;color:var(--muted);margin:0 0 10px">Gemini will inspect runner logs and relevant repository files, create a fix on a separate branch, open a pull request, and watch its checks. It will never push directly to your default branch or merge automatically.</p><button class="btn primary" id="autoFixWorkflow"><i data-lucide="wrench" width="14"></i>Investigate & create fix PR</button><div id="autoFixOutput" style="font-size:12px;white-space:pre-wrap;margin-top:10px"></div>';
+  body.appendChild(auto);$("autoFixWorkflow").onclick=()=>autoFixWorkflowRun(n);
  }
  if(n.workflowConclusion&&n.workflowConclusion!=="success"){
   const failure=document.createElement("section");failure.style.cssText="margin:0 0 18px;padding:12px;border:1px solid var(--line);border-radius:10px";
@@ -405,6 +411,97 @@ async function loadPipelineInspector(n){
   out.innerHTML=html;
  }catch(e){out.textContent="Could not load pipeline details: "+e.message}
 }
+const AUTOFIX_TRACK_KEY="restructure.github.autofix.prs.v1";
+function saveAutoFixPR(pr){let list=[];try{list=JSON.parse(localStorage.getItem(AUTOFIX_TRACK_KEY)||"[]")}catch(e){}list=list.filter(x=>x.url!==pr.url);list.push(pr);localStorage.setItem(AUTOFIX_TRACK_KEY,JSON.stringify(list.slice(-20)))}
+function notifyAutoFix(title,message){
+ toast(title+": "+message);
+ if("Notification" in window&&Notification.permission==="granted")new Notification(title,{body:message,tag:"tuff-autofix"});
+}
+async function watchAutoFixPR(pr){
+ for(let i=0;i<120;i++){
+  await new Promise(resolve=>setTimeout(resolve,30000));
+  if(!repo()||!token())return;
+  try{
+   const res=await fetch("https://api.github.com/repos/"+repo()+"/pulls/"+pr.number,{headers:githubHeaders()});
+   if(!res.ok)continue;const pull=await res.json();if(pull.state!=="open")return;
+   const sha=pull.head&&pull.head.sha;if(!sha)continue;
+   const cr=await fetch("https://api.github.com/repos/"+repo()+"/commits/"+sha+"/check-runs?per_page=100",{headers:githubHeaders()});
+   if(!cr.ok)continue;const data=await cr.json(),runs=data.check_runs||[];if(!runs.length||runs.some(c=>c.status!=="completed"))continue;
+   if(runs.every(c=>c.conclusion==="success")){
+    notifyAutoFix("Tuff: fix checks passed","All "+runs.length+" pull-request checks passed. Review before merging: "+pr.url);
+    let list=[];try{list=JSON.parse(localStorage.getItem(AUTOFIX_TRACK_KEY)||"[]")}catch(e){}
+    localStorage.setItem(AUTOFIX_TRACK_KEY,JSON.stringify(list.map(x=>x.url===pr.url?{...x,verified:true}:x)));return;
+   }
+   if(runs.some(c=>["failure","timed_out","action_required"].includes(c.conclusion))){notifyAutoFix("Tuff: fix needs review","The auto-fix PR still has failing or blocked checks: "+pr.url);return}
+  }catch(e){}
+ }
+}
+function redactLogText(s){
+ return String(s||"").replace(/gh[pousr]_[A-Za-z0-9_]{20,}/g,"[REDACTED_TOKEN]").replace(/AIza[0-9A-Za-z_-]{25,}/g,"[REDACTED_API_KEY]").replace(/(authorization:\s*bearer\s+)[^\s]+/ig,"$1[REDACTED]").replace(/(password|api[_-]?key|secret|token)\s*[:=]\s*[^\s,;]+/ig,"$1=[REDACTED]").slice(-24000);
+}
+async function autoFixWorkflowRun(n){
+ const out=$("autoFixOutput");if(!out)return;
+ const key=localStorage.getItem(STORAGE.aiKey);if(!key){out.textContent="Add a Gemini API key in AI briefs settings first.";return}
+ if(!repo()||!token()){out.textContent="Connect GitHub first.";return}
+ if(!window.JSZip){out.textContent="Log ZIP reader failed to load. Refresh and retry.";return}
+ if("Notification" in window&&Notification.permission==="default"){try{await Notification.requestPermission()}catch(e){}}
+ const runId=String(n.workflowRunId||"");if(!runId){out.textContent="Missing workflow run ID.";return}
+ const base="https://api.github.com/repos/"+repo(),headers=githubHeaders(),status=msg=>{out.textContent=msg};
+ try{
+  status("1/6 · Reading run, jobs and runner logs…");
+  const [rr,jr,repoRes]=await Promise.all([fetch(base+"/actions/runs/"+encodeURIComponent(runId),{headers}),fetch(base+"/actions/runs/"+encodeURIComponent(runId)+"/jobs?per_page=100",{headers}),fetch(base,{headers})]);
+  if(!rr.ok||!jr.ok||!repoRes.ok)throw new Error("GitHub read failed. Check Actions: Read and repository permissions.");
+  const run=await rr.json(),jobData=await jr.json(),repoData=await repoRes.json(),jobs=jobData.jobs||[];
+  let logs="";
+  for(const job of jobs.filter(j=>j.conclusion==="failure"||j.conclusion==="timed_out").slice(0,3)){
+   try{const lr=await fetch(base+"/actions/jobs/"+job.id+"/logs",{headers});if(!lr.ok)continue;
+    const zip=await JSZip.loadAsync(await lr.blob()),logFiles=Object.values(zip.files).filter(f=>!f.dir&&/\.txt$/i.test(f.name));
+    for(const file of logFiles.slice(0,8))logs+="\n--- "+job.name+" / "+file.name+" ---\n"+redactLogText(await file.async("text"));
+   }catch(e){logs+="\n[Could not decode logs for "+job.name+": "+e.message+"]"}
+  }
+  status("2/6 · Finding workflow files and likely source files…");
+  const treeRes=await fetch(base+"/git/trees/"+encodeURIComponent(run.head_sha)+"?recursive=1",{headers});
+  if(!treeRes.ok)throw new Error("Could not inspect repository tree. Check Contents: Read access.");
+  const treeData=await treeRes.json(),paths=(treeData.tree||[]).filter(x=>x.type==="blob").map(x=>x.path);
+  const workflowPaths=paths.filter(p=>/^\.github\/workflows\/[^/]+\.ya?ml$/i.test(p)).slice(0,8);
+  const detected=[...String(logs).matchAll(/(?:^|[\s:'"])([A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*\.(?:js|jsx|ts|tsx|py|yml|yaml|json|toml|sh|css|html|mjs|cjs|go|rs))(?::\d+)?/gm)].map(m=>m[1]).filter(p=>paths.includes(p));
+  const candidates=[...new Set([...workflowPaths,...detected])].slice(0,8),files=[];
+  for(const path of candidates){try{
+   const fr=await fetch(base+"/contents/"+path.split("/").map(encodeURIComponent).join("/")+"?ref="+encodeURIComponent(run.head_sha),{headers});if(!fr.ok)continue;
+   const fd=await fr.json();if(fd.type!=="file"||!fd.content)continue;
+   const raw=decodeURIComponent(escape(atob(fd.content.replace(/\s/g,""))));if(raw.length<=18000)files.push({path,sha:fd.sha,content:raw});
+  }catch(e){}}
+  if(!files.length)throw new Error("No readable workflow/source files found to ground a safe fix. Inspect logs and repository permissions.");
+  status("3/6 · Gemini is investigating the failure and preparing a minimal patch…");
+  const prompt="You are an expert repository incident engineer. Diagnose this failed GitHub Actions run using the real runner logs and repository file contents below. Return ONLY valid JSON with schema {\"summary\":\"...\",\"rootCause\":\"...\",\"confidence\":\"high|medium|low\",\"files\":[{\"path\":\"EXACT existing path from supplied files\",\"content\":\"COMPLETE replacement file contents\",\"reason\":\"...\"}],\"verification\":\"...\"}. Make the smallest safe fix supported by evidence. Only edit files whose full current content is supplied. Include at most 3 files. Do not add or alter secrets. Never put credentials in source. If evidence is insufficient, return files:[] and explain what is missing. Preserve unrelated code and formatting. Do not claim tests passed.\nRUN:\n"+JSON.stringify({repository:repo(),default_branch:repoData.default_branch,run:{name:run.name,event:run.event,branch:run.head_branch,sha:run.head_sha,conclusion:run.conclusion},jobs:jobs.map(j=>({name:j.name,conclusion:j.conclusion,steps:(j.steps||[]).map(s=>({name:s.name,conclusion:s.conclusion,number:s.number}))})),logs:logs.slice(-30000),files:files.map(f=>({path:f.path,content:f.content}))});
+  const gr=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key="+encodeURIComponent(key),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:.1,maxOutputTokens:10000,responseMimeType:"application/json"}})});
+  const gd=await gr.json();if(!gr.ok)throw new Error(gd.error?.message||"Gemini diagnosis failed.");
+  const answer=gd.candidates?.[0]?.content?.parts?.map(p=>p.text||"").join("");if(!answer)throw new Error("Gemini returned no patch.");
+  let patch;try{patch=JSON.parse(answer)}catch(e){throw new Error("Gemini returned invalid patch JSON. No repository changes were made.")}
+  if(!Array.isArray(patch.files)||!patch.files.length){status("No safe automatic patch generated.\nCause: "+(patch.rootCause||patch.summary||"insufficient evidence")+"\n"+(patch.verification||"Inspect the run logs and relevant files manually."));return}
+  if(patch.files.length>3)throw new Error("Gemini proposed too many file changes; refusing to apply.");
+  for(const change of patch.files){if(!files.some(f=>f.path===change.path)||typeof change.content!=="string")throw new Error("Gemini proposed a file outside the reviewed context. No changes applied.");if(change.content.length>60000)throw new Error("Proposed file is too large; refusing to apply.");if(/(?:gh[pousr]_[A-Za-z0-9_]{20,}|AIza[0-9A-Za-z_-]{25,})/.test(change.content))throw new Error("Potential credential detected in proposed code. Refusing to apply.");}
+  status("4/6 · Creating an isolated fix branch…");
+  const branch="tuff/gemini-fix-"+runId+"-"+Date.now().toString(36);
+  const br=await fetch(base+"/git/refs",{method:"POST",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({ref:"refs/heads/"+branch,sha:run.head_sha})});
+  if(!br.ok)throw new Error("Could not create fix branch ("+br.status+"). Token needs Contents: Write permission.");
+  status("5/6 · Applying the patch to the branch and opening a pull request…");
+  for(const change of patch.files){
+   const original=files.find(f=>f.path===change.path),encoded=btoa(unescape(encodeURIComponent(change.content)));
+   const wr=await fetch(base+"/contents/"+change.path.split("/").map(encodeURIComponent).join("/"),{method:"PUT",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({message:"fix: "+String(patch.summary||"workflow failure").slice(0,65),content:encoded,sha:original.sha,branch})});
+   if(!wr.ok)throw new Error("Branch created but update of "+change.path+" failed ("+wr.status+"). No PR was created; inspect branch "+branch+".");
+  }
+  const title=("fix: "+String(patch.summary||"Repair failed workflow")).slice(0,120);
+  const prBody="## Gemini workflow auto-fix\n\n**Failed run:** "+(run.html_url||"run "+runId)+"\n\n**Likely cause:** "+(patch.rootCause||patch.summary||"Not specified")+"\n\n**Confidence:** "+(patch.confidence||"unspecified")+"\n\n**Files changed:**\n"+patch.files.map(f=>"- "+f.path+": "+f.reason).join("\n")+"\n\n**Verification plan:** "+(patch.verification||"Review diff and wait for CI checks.")+"\n\nGenerated by Tuff using Gemini. This PR has not been merged. Review the diff and check results before merging.";
+  const prRes=await fetch(base+"/pulls",{method:"POST",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({title,head:branch,base:repoData.default_branch,body:prBody,draft:false})});
+  const pr=await prRes.json();if(!prRes.ok)throw new Error("Patch branch created but PR creation failed ("+prRes.status+"): "+(pr.message||"unknown error")+" Branch: "+branch);
+  saveAutoFixPR({number:pr.number,url:pr.html_url,branch,runId,createdAt:Date.now(),verified:false});
+  status("PR created: "+pr.html_url+"\n\nGemini diagnosis: "+(patch.rootCause||patch.summary)+"\nConfidence: "+(patch.confidence||"unspecified")+"\nFiles changed: "+patch.files.map(f=>f.path).join(", ")+"\n\nWatching CI checks. Tuff must remain open for its browser notification.");
+  notifyAutoFix("Tuff opened a fix PR","Gemini proposed a fix for workflow run "+runId+". Checks are running: "+pr.html_url);
+  watchAutoFixPR({number:pr.number,url:pr.html_url});
+ }catch(e){status("Auto-fix stopped safely: "+e.message+"\nNo direct changes were made to the default branch.")}
+}
+
 async function analyzeWorkflowFailure(n){
  const out=$("workflowDiagnosis");if(!out)return;
  const key=localStorage.getItem(STORAGE.aiKey);if(!key){out.textContent="No Gemini API key configured. Open AI briefs and add your Gemini key.";return}
