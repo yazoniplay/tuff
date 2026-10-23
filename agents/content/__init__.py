@@ -1,1 +1,0 @@
-"""Content drafting agent."""
