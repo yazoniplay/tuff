@@ -439,4 +439,29 @@
     }
 
     function triggerNodeAction() {
-      alert(`Triggered action for ${activeNode?.title}! Check GitHub Actions 
+      alert(`Triggered action for ${activeNode?.title}! Check GitHub Actions for details.`);
+      closeInspector();
+    }
+
+    // Touch & Canvas Dragging
+    container.addEventListener('mousedown', (e) => {
+      if (e.target === container || e.target.id === 'nodes-layer' || e.target.tagName === 'svg') {
+        isDragging = true;
+        startX = e.clientX - pointX;
+        startY = e.clientY - pointY;
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      pointX = e.clientX - startX;
+      pointY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    init();
+  </script>
+</body>
+</html>
