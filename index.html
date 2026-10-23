@@ -142,6 +142,7 @@ function updateConnectionList(){const root=$("connectionList");root.innerHTML=""
 $("addConnection").onclick=()=>{const from=$("fromNode").value,to=$("toNode").value;if(!from||!to||from===to)return toast("Choose two different nodes.");if(edges.some(e=>e.from===from&&e.to===to))return toast("That connection already exists.");edges.push({id:"e"+Date.now(),from,to,style:$("lineStyle").value});persist();render();updateConnectionList();toast("Connection added.")};
 function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function openInspector(id){selected=id;const n=nodeById(id);if(!n)return;render();$("inspectCategory").textContent=n.category;$("inspectTitle").textContent=n.title;$("inspectRole").textContent=n.role;const body=$("inspectBody");body.innerHTML="";
+if(n.commitUrl){const link=document.createElement("a");link.className="btn primary";link.href=n.commitUrl;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Open commit on GitHub";link.style.marginBottom="12px";body.appendChild(link)}
 const actions=document.createElement("div");actions.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px";actions.innerHTML='<button class="btn primary" id="generateBrief"><i data-lucide="sparkles" width="14"></i>Generate AI brief</button><button class="btn" id="duplicateNode"><i data-lucide="copy" width="14"></i>Duplicate</button><button class="btn" id="deleteNode"><i data-lucide="trash-2" width="14"></i>Delete block</button><button class="btn" id="runWorkflow"><i data-lucide="play" width="14"></i>Run workflow</button><button class="btn" id="fetchIssues"><i data-lucide="circle-dot" width="14"></i>Fetch issues</button>';body.appendChild(actions);
 const briefSection=document.createElement("section");briefSection.innerHTML='<div class="section-label">What this block does</div><div id="briefOutput" class="empty"></div>';body.appendChild(briefSection);$("briefOutput").textContent=n.role+" It contains "+(n.items.length?n.items.join(", "):"no components configured")+". It connects from "+(edges.filter(e=>e.to===n.id).map(e=>nodeById(e.from)?.title||e.from).join(", ")||"no upstream blocks")+" and sends work to "+(edges.filter(e=>e.from===n.id).map(e=>nodeById(e.to)?.title||e.to).join(", ")||"no downstream blocks")+". Use Generate AI brief for a detailed operating plan."; 
 const desc=document.createElement("div");desc.className="field";desc.innerHTML='<label for="editRole">Module role</label><textarea id="editRole">'+escapeHTML(n.role)+'</textarea>';body.appendChild(desc);
@@ -157,7 +158,7 @@ $("closeInspector").onclick=closeInspector;$("scrim").onclick=closeInspector;
 function repo(){return(localStorage.getItem(STORAGE.repo)||"").trim()}function token(){return localStorage.getItem(STORAGE.token)||""}
 function githubHeaders(){const h={"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};if(token())h.Authorization="Bearer "+token();return h}
 $("githubBtn").onclick=()=>{const r=repo().split("/");$("repoInput").value=r.length===2?repo():"";$("tokenInput").value=token();$("githubMessage").textContent="";showModal("githubModal")};
-$("saveGithub").onclick=async()=>{const r=$("repoInput").value.trim(),t=$("tokenInput").value.trim();if(!/^[^/ ]+\/[^/ ]+$/.test(r))return $("githubMessage").textContent="Enter a valid owner/repo name.";if(!t)return $("githubMessage").textContent="Enter a token with repository access.";localStorage.setItem(STORAGE.repo,r);localStorage.setItem(STORAGE.token,t);$("githubMessage").textContent="Testing repository access…";try{const res=await fetch("https://api.github.com/repos/"+r,{headers:githubHeaders()});if(!res.ok)throw new Error(res.status+" "+res.statusText);const data=await res.json();$("githubMessage").textContent="Connected to "+data.full_name+". Workflow monitoring will start; existing runs are used as the initial baseline.";updateGithubStatus(true);startWorkflowMonitor();toast("GitHub connected and workflow monitoring enabled.");}catch(e){$("githubMessage").textContent="Connection failed: "+e.message;updateGithubStatus(false)}};
+$("saveGithub").onclick=async()=>{const r=$("repoInput").value.trim(),t=$("tokenInput").value.trim();if(!/^[^/ ]+\/[^/ ]+$/.test(r))return $("githubMessage").textContent="Enter a valid owner/repo name.";if(!t)return $("githubMessage").textContent="Enter a token with repository access.";localStorage.setItem(STORAGE.repo,r);localStorage.setItem(STORAGE.token,t);$("githubMessage").textContent="Testing repository access…";try{const res=await fetch("https://api.github.com/repos/"+r,{headers:githubHeaders()});if(!res.ok)throw new Error(res.status+" "+res.statusText);const data=await res.json();$("githubMessage").textContent="Connected to "+data.full_name+". Workflow monitoring will start; existing runs are used as the initial baseline.";updateGithubStatus(true);startWorkflowMonitor();startCommitMonitor();toast("GitHub connected; workflow and commit monitoring enabled.");}catch(e){$("githubMessage").textContent="Connection failed: "+e.message;updateGithubStatus(false)}};
 $("clearGithub").onclick=()=>{localStorage.removeItem(STORAGE.repo);localStorage.removeItem(STORAGE.token);$("repoInput").value="";$("tokenInput").value="";$("githubMessage").textContent="Disconnected. Stored credentials removed from this browser.";updateGithubStatus(false)};
 function updateGithubStatus(ok){const el=$("connectionStatus");el.innerHTML='<i style="background:'+(ok?"#22c55e":"#94a3b8")+'"></i><span>'+(ok?"GitHub connected":"Local canvas")+'</span>'}
 async function fetchIssues(n){const root=$("issueList");root.innerHTML='<div class="empty">Loading issues…</div>';if(!repo())return root.innerHTML='<div class="empty">Connect GitHub first using the GitHub button.</div>';try{const labels=(n.labels||[]).join(",");const url="https://api.github.com/repos/"+repo()+"/issues?state=open&per_page=30"+(labels?"&labels="+encodeURIComponent(labels):"");const res=await fetch(url,{headers:githubHeaders()});if(!res.ok)throw new Error(res.status+" "+res.statusText);const list=(await res.json()).filter(x=>!x.pull_request);root.innerHTML="";if(!list.length){root.innerHTML='<div class="empty">No open issues found for this module’s labels.</div>';return}list.forEach(issue=>{const el=document.createElement("div");el.className="issue";el.innerHTML='<a target="_blank" rel="noopener noreferrer" href="'+escapeHTML(issue.html_url)+'">#'+issue.number+" "+escapeHTML(issue.title)+'</a><p>'+escapeHTML(issue.state)+' · '+escapeHTML(issue.labels.map(l=>l.name).join(", ")||"unlabeled")+'</p>';root.appendChild(el)})}catch(e){root.innerHTML='<div class="empty">Could not load issues: '+escapeHTML(e.message)+'. Check repository, token permissions, and rate limits.</div>'}}
@@ -220,6 +221,64 @@ function startWorkflowMonitor(){
  pollWorkflowRuns(true);
  workflowPollTimer=setInterval(()=>{if(repo()&&token())pollWorkflowRuns(false)},20000);
 }
+function commitSeenKey(r=repo()){return "restructure.github.commitSeen.v1:"+r.toLowerCase()}
+function createCommitBlock(commit){
+ const sha=String(commit.sha||"");
+ if(!sha||nodeById("commit-"+sha))return false;
+ const meta=commit.commit||{},author=meta.author||{},committer=meta.committer||{};
+ const message=String(meta.message||"Commit").split("\n")[0].trim()||"Commit";
+ const who=(author.name||((commit.author&&commit.author.login)||"Unknown author")).trim();
+ const when=author.date||committer.date||"";
+ const shortSha=sha.slice(0,7);
+ const source=nodes.find(n=>n.id==="knowledge")||nodes[0];
+ const count=nodes.filter(n=>n.category==="GITHUB COMMIT").length;
+ const block={id:"commit-"+sha,title:"Commit · "+message.slice(0,48),category:"GITHUB COMMIT",role:"Automatically logged Git commit from "+repo()+". This block records the commit message, author, timestamp, SHA, and links to the full commit on GitHub.",icon:"activity",x:Math.round((source?source.x+source.w+390:780)+((count%3)*35)),y:Math.round((source?source.y:140)+((count%5)*185)),w:280,h:170,items:["Author: "+who,"Commit: "+shortSha,"Date: "+(when?new Date(when).toLocaleString():"unknown"),"Repository: "+repo()],tasks:[],triggers:["git_commit"],labels:["github","commit"],commitSha:sha,commitUrl:commit.html_url||("https://github.com/"+repo()+"/commit/"+sha),commitAuthor:who,commitMessage:message,commitDate:when};
+ nodes.push(block);
+ if(source&&!edges.some(e=>e.from===source.id&&e.to===block.id))edges.push({id:"e-commit-"+sha,from:source.id,to:block.id,style:"solid"});
+ persist();render();fillNodeSelects();updateConnectionList();
+ return true;
+}
+let commitPollTimer=null,commitPollBusy=false;
+async function pollCommits(initial){
+ if(commitPollBusy||!repo()||!token())return;
+ commitPollBusy=true;
+ const currentRepo=repo(),key=commitSeenKey(currentRepo);
+ try{
+  const res=await fetch("https://api.github.com/repos/"+currentRepo+"/commits?per_page=100",{headers:githubHeaders()});
+  if(!res.ok)throw new Error("Commits API returned "+res.status+". Check repository access and token permissions.");
+  const commits=await res.json();
+  if(!Array.isArray(commits))throw new Error("GitHub returned an unexpected commits response.");
+  let seen;
+  try{seen=JSON.parse(localStorage.getItem(key)||"null")}catch(e){seen=null}
+  if(!Array.isArray(seen)){
+   const latest=commits[0]||null;
+   const baseline=commits.slice(1).map(c=>String(c.sha)).filter(Boolean).slice(0,999);
+   localStorage.setItem(key,JSON.stringify(baseline));
+   if(latest&&repo()===currentRepo){
+    createCommitBlock(latest);
+    const ids=JSON.parse(localStorage.getItem(key)||"[]");
+    if(!ids.includes(String(latest.sha)))ids.push(String(latest.sha));
+    localStorage.setItem(key,JSON.stringify(ids.slice(-1000)));
+   }
+   return;
+  }
+  const seenSet=new Set(seen.map(String));
+  const fresh=commits.filter(c=>c.sha&&!seenSet.has(String(c.sha))).reverse();
+  for(const commit of fresh){
+   if(repo()!==currentRepo)break;
+   createCommitBlock(commit);
+   seenSet.add(String(commit.sha));
+  }
+  localStorage.setItem(key,JSON.stringify(Array.from(seenSet).slice(-1000)));
+ }catch(e){if(initial)toast("Commit logging could not start: "+e.message)}
+ finally{commitPollBusy=false}
+}
+function startCommitMonitor(){
+ if(commitPollTimer)clearInterval(commitPollTimer);
+ if(!repo()||!token())return;
+ pollCommits(true);
+ commitPollTimer=setInterval(()=>{if(repo()&&token())pollCommits(false)},20000);
+}
 async function dispatchWorkflow(n){
  if(!repo()||!token()){toast("Connect GitHub with a repository token first.");showModal("githubModal");return}
  if(!confirm("Dispatch workflow for “"+n.title+"”? Tuff will monitor this repository and add a block when any workflow run completes."))return;
@@ -235,7 +294,7 @@ async function dispatchWorkflow(n){
 $("themeBtn").onclick=()=>{const dark=!document.documentElement.classList.contains("dark");document.documentElement.classList.toggle("dark",dark);localStorage.setItem(STORAGE.theme,dark?"dark":"light");$("themeBtn").innerHTML='<i data-lucide="'+(dark?"sun":"moon")+'" width="15"></i>';icons()};
 function icons(){if(window.lucide)window.lucide.createIcons()}
 function init(){const theme=localStorage.getItem(STORAGE.theme)||"light";document.documentElement.classList.toggle("dark",theme==="dark");$("themeBtn").innerHTML='<i data-lucide="'+(theme==="dark"?"sun":"moon")+'" width="15"></i>';icons();render();updateGithubStatus(!!repo()&&!!token());fillNodeSelects();window.addEventListener("keydown",e=>{if(e.key==="Escape"){closeInspector();document.querySelectorAll(".modal.open").forEach(m=>closeModal(m.id))}});window.addEventListener("resize",()=>{});}
-init();startWorkflowMonitor();
+init();startWorkflowMonitor();startCommitMonitor();
 })();
 </script>
 </body></html>
