@@ -1,6 +1,6 @@
 {
   "repository": "yazoniplay/yazoniiOS",
-  "lastSeenSha": "529d5535e25882eecedb5254cfb57a94537986d5",
+  "lastSeenSha": "09b05ae5d5e0e2d5b999dd3063c5e757042f6c8b",
   "commits": [
     {
       "sha": "08ba88a7b9641b22d4ab1b1a8d3d5d8f288e4727",
@@ -882,6 +882,421 @@
           "sha": "2f4ec83ab0e7a75ae9710901352003d1d9e90b63",
           "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/2f4ec83ab0e7a75ae9710901352003d1d9e90b63",
           "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/2f4ec83ab0e7a75ae9710901352003d1d9e90b63"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "ae5eb82ee69e3d3e8a7d0b05901bf742f690d1d2",
+      "node_id": "C_kwDOUgta69oAKGFlNWViODJlZTY5ZTNkM2U4YTdkMGIwNTkwMWJmNzQyZjY5MGQxZDI",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T12:43:02Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T12:43:02Z"
+        },
+        "message": "Replace project with NourOS native Android launcher foundation",
+        "tree": {
+          "sha": "5d60fe25470d30a5ac4987aaebb64afb30f8df03",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/5d60fe25470d30a5ac4987aaebb64afb30f8df03"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/ae5eb82ee69e3d3e8a7d0b05901bf742f690d1d2",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/ae5eb82ee69e3d3e8a7d0b05901bf742f690d1d2",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/ae5eb82ee69e3d3e8a7d0b05901bf742f690d1d2",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/ae5eb82ee69e3d3e8a7d0b05901bf742f690d1d2/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "529d5535e25882eecedb5254cfb57a94537986d5",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/529d5535e25882eecedb5254cfb57a94537986d5",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/529d5535e25882eecedb5254cfb57a94537986d5"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "9db7fa248151499336f69126191d479a19c592e1",
+      "node_id": "C_kwDOUgta69oAKDlkYjdmYTI0ODE1MTQ5OTMzNmY2OTEyNjE5MWQ0NzlhMTljNTkyZTE",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T12:43:12Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T12:43:12Z"
+        },
+        "message": "Fix NourOS decorative glow positioning",
+        "tree": {
+          "sha": "62d92ac0529f821a13935db9534b0c9fd9f093cc",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/62d92ac0529f821a13935db9534b0c9fd9f093cc"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/9db7fa248151499336f69126191d479a19c592e1",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/9db7fa248151499336f69126191d479a19c592e1",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/9db7fa248151499336f69126191d479a19c592e1",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/9db7fa248151499336f69126191d479a19c592e1/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "ae5eb82ee69e3d3e8a7d0b05901bf742f690d1d2",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/ae5eb82ee69e3d3e8a7d0b05901bf742f690d1d2",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/ae5eb82ee69e3d3e8a7d0b05901bf742f690d1d2"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "4d4a7d93eae40ba227f3dd98e1bd810f62dd8061",
+      "node_id": "C_kwDOUgta69oAKDRkNGE3ZDkzZWFlNDBiYTIyN2YzZGQ5OGUxYmQ4MTBmNjJkZDgwNjE",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T12:48:08Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T12:48:08Z"
+        },
+        "message": "Build and upload NourOS release APK; fix Android SDK setup",
+        "tree": {
+          "sha": "9ad0c25fdda308a70f3643e21d645935c6d8fce4",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/9ad0c25fdda308a70f3643e21d645935c6d8fce4"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/4d4a7d93eae40ba227f3dd98e1bd810f62dd8061",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/4d4a7d93eae40ba227f3dd98e1bd810f62dd8061",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/4d4a7d93eae40ba227f3dd98e1bd810f62dd8061",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/4d4a7d93eae40ba227f3dd98e1bd810f62dd8061/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "9db7fa248151499336f69126191d479a19c592e1",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/9db7fa248151499336f69126191d479a19c592e1",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/9db7fa248151499336f69126191d479a19c592e1"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "e8334b8ed850a8c28bd2c7a0c2049756ef50b2fa",
+      "node_id": "C_kwDOUgta69oAKGU4MzM0YjhlZDg1MGE4YzI4YmQyYzdhMGMyMDQ5NzU2ZWY1MGIyZmE",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T12:48:11Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T12:48:11Z"
+        },
+        "message": "Configure installable release APK variant",
+        "tree": {
+          "sha": "19a0bc7d4c16214d2cd3a6f8235711ed4de2db37",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/19a0bc7d4c16214d2cd3a6f8235711ed4de2db37"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/e8334b8ed850a8c28bd2c7a0c2049756ef50b2fa",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/e8334b8ed850a8c28bd2c7a0c2049756ef50b2fa",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/e8334b8ed850a8c28bd2c7a0c2049756ef50b2fa",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/e8334b8ed850a8c28bd2c7a0c2049756ef50b2fa/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "4d4a7d93eae40ba227f3dd98e1bd810f62dd8061",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/4d4a7d93eae40ba227f3dd98e1bd810f62dd8061",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/4d4a7d93eae40ba227f3dd98e1bd810f62dd8061"
+        }
+      ],
+      "repository": "yazoniplay/yazoniiOS"
+    },
+    {
+      "sha": "09b05ae5d5e0e2d5b999dd3063c5e757042f6c8b",
+      "node_id": "C_kwDOUgta69oAKDA5YjA1YWU1ZDVlMGUyZDViOTk5ZGQzMDYzYzVlNzU3MDQyZjZjOGI",
+      "commit": {
+        "author": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T13:09:47Z"
+        },
+        "committer": {
+          "name": "yazoniplay",
+          "email": "yazan.mahmoud2@outlook.com",
+          "date": "2026-10-24T13:09:47Z"
+        },
+        "message": "Enable AndroidX for NourOS release build",
+        "tree": {
+          "sha": "eae238ce3dd941cae373b2dc3bee75e67c5802a5",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/trees/eae238ce3dd941cae373b2dc3bee75e67c5802a5"
+        },
+        "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/git/commits/09b05ae5d5e0e2d5b999dd3063c5e757042f6c8b",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/09b05ae5d5e0e2d5b999dd3063c5e757042f6c8b",
+      "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/09b05ae5d5e0e2d5b999dd3063c5e757042f6c8b",
+      "comments_url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/09b05ae5d5e0e2d5b999dd3063c5e757042f6c8b/comments",
+      "author": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yazoniplay",
+        "id": 242845551,
+        "node_id": "U_kgDODnmHbw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/242845551?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yazoniplay",
+        "html_url": "https://github.com/yazoniplay",
+        "followers_url": "https://api.github.com/users/yazoniplay/followers",
+        "following_url": "https://api.github.com/users/yazoniplay/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yazoniplay/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yazoniplay/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yazoniplay/subscriptions",
+        "organizations_url": "https://api.github.com/users/yazoniplay/orgs",
+        "repos_url": "https://api.github.com/users/yazoniplay/repos",
+        "events_url": "https://api.github.com/users/yazoniplay/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yazoniplay/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "e8334b8ed850a8c28bd2c7a0c2049756ef50b2fa",
+          "url": "https://api.github.com/repos/yazoniplay/YazoniiOS/commits/e8334b8ed850a8c28bd2c7a0c2049756ef50b2fa",
+          "html_url": "https://github.com/yazoniplay/YazoniiOS/commit/e8334b8ed850a8c28bd2c7a0c2049756ef50b2fa"
         }
       ],
       "repository": "yazoniplay/yazoniiOS"
